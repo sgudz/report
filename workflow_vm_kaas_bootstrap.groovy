@@ -32,7 +32,7 @@ workflow:
     REPORT_KAAS_UI: artifacts/kaas_ui_report.tar
 
 finnaly1:
-- job: testrail-report
+- job: kaas_testrail_report
   ignore_failed: true
   parameters:
     BABABA:
