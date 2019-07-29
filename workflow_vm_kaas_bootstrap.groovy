@@ -1,6 +1,6 @@
 scenario_yaml = """\
 workflow:
-- job: wip-create-vm-kaas-management
+- job: test_sg_report
   ignore_failed: false
   parameters:
     ENV_NAME:
