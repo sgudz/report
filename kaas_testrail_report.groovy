@@ -1,6 +1,5 @@
 /**
  *
- * Deploy the product cluster using Jenkins master on CICD cluster
  *
  * Expected parameters:
  *   ENV_NAME                      Fuel-devops environment name
@@ -27,19 +26,13 @@ node ("${PARENT_NODE_NAME}") {
         def exception_message = ''
         try {
 
-            if (env.TCP_QA_REFS) {
-                stage("Update working dir to patch ${TCP_QA_REFS}") {
-                    shared.update_working_dir()
-                }
-            }
-
             def report_name = ''
             def testSuiteName = ''
             def methodname = ''
             def testrail_name_template = ''
             def reporter_extra_options = []
 
-            def report_url = ''
+            def reports_urls = [,]
 
             if (deployment_report_name) {
                 stage("Deployment report") {
@@ -85,112 +78,6 @@ node ("${PARENT_NODE_NAME}") {
                 }
             }
 
-            if ('openstack' in stacks && tempest_report_name) {
-                stage("Tempest report") {
-                    testSuiteName = env.TEMPEST_TEST_SUITE_NAME
-                    methodname = "{classname}.{methodname}"
-                    testrail_name_template = "{title}"
-                    ret = shared.upload_results_to_testrail(tempest_report_name, testSuiteName, methodname, testrail_name_template)
-                    common.printMsg(ret.stdout, "blue")
-                    report_url = ret.stdout.split("\n").each {
-                        if (it.contains("[TestRun URL]")) {
-                            common.printMsg("Found report URL: " + it.trim().split().last(), "blue")
-                            description += "<a href=" + it.trim().split().last() + ">${testSuiteName}</a><br>"
-                        }
-                    }
-                    exception_message += ret.exception
-                }
-            }
-
-            if ('k8s' in stacks && k8s_conformance_report_name) {
-                stage("K8s conformance report") {
-                    def k8s_version=shared.run_cmd_stdout("""\
-                        . ./env_k8s_version;
-                        echo "\$KUBE_SERVER_VERSION"
-                    """).trim().split().last()
-                    testSuiteName = "[MCP][k8s]Hyperkube ${k8s_version}.x"
-                    methodname = "{methodname}"
-                    testrail_name_template = "{title}"
-                    reporter_extra_options = [
-                      "--send-duplicates",
-                      "--testrail-add-missing-cases",
-                      "--testrail-case-custom-fields {\\\"custom_qa_team\\\":\\\"9\\\"}",
-                      "--testrail-case-section-name \'Conformance\'",
-                    ]
-                    ret = shared.upload_results_to_testrail(k8s_conformance_report_name, testSuiteName, methodname, testrail_name_template, reporter_extra_options)
-                    common.printMsg(ret.stdout, "blue")
-                    report_url = ret.stdout.split("\n").each {
-                        if (it.contains("[TestRun URL]")) {
-                            common.printMsg("Found report URL: " + it.trim().split().last(), "blue")
-                            description += "<a href=" + it.trim().split().last() + ">${testSuiteName}</a><br>"
-                        }
-                    }
-                    exception_message += ret.exception
-                }
-            }
-
-            if ('k8s' in stacks && k8s_conformance_virtlet_report_name) {
-                stage("K8s conformance virtlet report") {
-                    testSuiteName = "[k8s] Virtlet"
-                    methodname = "{methodname}"
-                    testrail_name_template = "{title}"
-                    reporter_extra_options = [
-                      "--send-duplicates",
-                      "--testrail-add-missing-cases",
-                      "--testrail-case-custom-fields {\\\"custom_qa_team\\\":\\\"9\\\"}",
-                      "--testrail-case-section-name \'Conformance\'",
-                    ]
-                    ret = shared.upload_results_to_testrail(k8s_conformance_virtlet_report_name, testSuiteName, methodname, testrail_name_template, reporter_extra_options)
-                    common.printMsg(ret.stdout, "blue")
-                    report_url = ret.stdout.split("\n").each {
-                        if (it.contains("[TestRun URL]")) {
-                            common.printMsg("Found report URL: " + it.trim().split().last(), "blue")
-                            description += "<a href=" + it.trim().split().last() + ">${testSuiteName}</a><br>"
-                        }
-                    }
-                    exception_message += ret.exception
-                }
-            }
-
-            if ('stacklight' in stacks && stacklight_report_name) {
-                stage("stacklight-pytest report") {
-                    testSuiteName = "LMA2.0_Automated"
-                    methodname = "{methodname}"
-                    testrail_name_template = "{title}"
-                    ret = shared.upload_results_to_testrail(stacklight_report_name, testSuiteName, methodname, testrail_name_template)
-                    common.printMsg(ret.stdout, "blue")
-                    report_url = ret.stdout.split("\n").each {
-                        if (it.contains("[TestRun URL]")) {
-                            common.printMsg("Found report URL: " + it.trim().split().last(), "blue")
-                            description += "<a href=" + it.trim().split().last() + ">${testSuiteName}</a><br>"
-                        }
-                    }
-                    exception_message += ret.exception
-                }
-            }
-
-            if ('cicd' in stacks && cvp_sanity_report_name) {
-                stage("CVP Sanity report") {
-                    testSuiteName = "[MCP] cvp sanity"
-                    methodname = '{methodname}'
-                    testrail_name_template = '{title}'
-                    reporter_extra_options = [
-                      "--send-duplicates",
-                      "--testrail-add-missing-cases",
-                      "--testrail-case-custom-fields {\\\"custom_qa_team\\\":\\\"9\\\"}",
-                      "--testrail-case-section-name \'All\'",
-                    ]
-                    ret = shared.upload_results_to_testrail(cvp_sanity_report_name, testSuiteName, methodname, testrail_name_template, reporter_extra_options)
-                    common.printMsg(ret.stdout, "blue")
-                    report_url = ret.stdout.split("\n").each {
-                        if (it.contains("[TestRun URL]")) {
-                            common.printMsg("Found report URL: " + it.trim().split().last(), "blue")
-                            description += "<a href=" + it.trim().split().last() + ">${testSuiteName}</a><br>"
-                        }
-                    }
-                    exception_message += ret.exception
-                }
-            }
 
             // Check if there were any exceptions during reporting
             if (exception_message) {
