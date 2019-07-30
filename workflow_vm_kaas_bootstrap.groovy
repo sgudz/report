@@ -16,31 +16,16 @@ workflow:
     KUBECONFIG_ARTIFACT: artifacts/management_kubeconfig
     REPORT_SI_KAAS_BOOTSTRAP: artifacts/bootstrap_kaas_result.xml
 
-- job: wip-test-kaas-ui
-  parameters:
-    ENV_NAME:
-      type: StringParameterValue
-      use_variable: ENV_NAME
-    KUBECONFIG_ARTIFACT:
-      type: StringParameterValue
-      use_variable: KUBECONFIG_ARTIFACT
-    SI_TESTS_REFSPEC:
-      type: StringParameterValue
-      use_variable: SI_TESTS_REFSPEC
-  artifacts:
-    REPORT_SI_KAAS_UI: artifacts/test_kaas_ui_result.xml
-    REPORT_KAAS_UI: artifacts/kaas_ui_report.tar
-
 finnaly1:
 - job: kaas_testrail_report
   ignore_failed: true
   parameters:
-    BABABA:
+    KUBECONFIG_ARTIFACT:
       type: StringParameterValue
-      use_variable: BABABA
-    DEDEDE:
+      use_variable: KUBECONFIG_ARTIFACT
+    REPORT_SI_KAAS_BOOTSTRAP:
       type: StringParameterValue
-      use_variable: DEDEDE
+      use_variable: REPORT_SI_KAAS_BOOTSTRAP
   artifacts:
     A1: example.yaml
     A2: example222.yaml
