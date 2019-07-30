@@ -10,11 +10,7 @@
 
 def common = new com.mirantis.mk.Common()
 
-if (! env.PARENT_NODE_NAME) {
-    error "'PARENT_NODE_NAME' must be set from the parent deployment job!"
-}
-
-currentBuild.description = "${PARENT_NODE_NAME}:${ENV_NAME}"
+def report_filename = "./artifacts/bootstrap_kaas_result.xml"
 
 timeout(time: 2, unit: 'HOURS') {
 node () {
@@ -32,29 +28,7 @@ node () {
 
             def reports_urls = [deployment_report_name:REPORT_SI_KAAS_BOOTSTRAP]
 
-            if (deployment_report_name) {
-                stage("Deployment report") {
-                    testSuiteName = "[MCP] Integration automation"
-                    methodname = '{methodname}'
-                    testrail_name_template = '{title}'
-                    reporter_extra_options = [
-                      "--testrail-add-missing-cases",
-                      "--testrail-case-custom-fields {\\\"custom_qa_team\\\":\\\"9\\\"}",
-                      "--testrail-case-section-name \'All\'",
-                    ]
-                    ret = upload_results_to_testrail(deployment_report_name, testSuiteName, methodname, testrail_name_template, reporter_extra_options)
-                    common.printMsg(ret.stdout, "blue")
-                    report_url = ret.stdout.split("\n").each {
-                        if (it.contains("[TestRun URL]")) {
-                            common.printMsg("Found report URL: " + it.trim().split().last(), "blue")
-                            description += "<a href=" + it.trim().split().last() + ">${testSuiteName}</a><br>"
-                        }
-                    }
-                    exception_message += ret.exception
-                }
-            }
-
-            if (tcpqa_report_name) {
+            if (report_filename) {
                 stage("tcp-qa cases report") {
                     testSuiteName = "[MCP_X] integration cases"
                     methodname = "{methodname}"
@@ -64,7 +38,7 @@ node () {
                       "--testrail-case-custom-fields {\\\"custom_qa_team\\\":\\\"9\\\"}",
                       "--testrail-case-section-name \'All\'",
                     ]
-                    ret = upload_results_to_testrail(tcpqa_report_name, testSuiteName, methodname, testrail_name_template, reporter_extra_options)
+                    ret = upload_results_to_testrail(report_filename, testSuiteName, methodname, testrail_name_template, reporter_extra_options)
                     common.printMsg(ret.stdout, "blue")
                     report_url = ret.stdout.split("\n").each {
                         if (it.contains("[TestRun URL]")) {
