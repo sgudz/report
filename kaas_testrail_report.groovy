@@ -32,7 +32,7 @@ node ("${PARENT_NODE_NAME}") {
             def testrail_name_template = ''
             def reporter_extra_options = []
 
-            def reports_urls = [:]
+            def reports_urls = [deployment_report_name:REPORT_SI_KAAS_BOOTSTRAP]
 
             if (deployment_report_name) {
                 stage("Deployment report") {
@@ -44,7 +44,7 @@ node ("${PARENT_NODE_NAME}") {
                       "--testrail-case-custom-fields {\\\"custom_qa_team\\\":\\\"9\\\"}",
                       "--testrail-case-section-name \'All\'",
                     ]
-                    ret = shared.upload_results_to_testrail(deployment_report_name, testSuiteName, methodname, testrail_name_template, reporter_extra_options)
+                    ret = upload_results_to_testrail(deployment_report_name, testSuiteName, methodname, testrail_name_template, reporter_extra_options)
                     common.printMsg(ret.stdout, "blue")
                     report_url = ret.stdout.split("\n").each {
                         if (it.contains("[TestRun URL]")) {
@@ -66,7 +66,7 @@ node ("${PARENT_NODE_NAME}") {
                       "--testrail-case-custom-fields {\\\"custom_qa_team\\\":\\\"9\\\"}",
                       "--testrail-case-section-name \'All\'",
                     ]
-                    ret = shared.upload_results_to_testrail(tcpqa_report_name, testSuiteName, methodname, testrail_name_template, reporter_extra_options)
+                    ret = upload_results_to_testrail(tcpqa_report_name, testSuiteName, methodname, testrail_name_template, reporter_extra_options)
                     common.printMsg(ret.stdout, "blue")
                     report_url = ret.stdout.split("\n").each {
                         if (it.contains("[TestRun URL]")) {
