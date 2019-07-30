@@ -70,17 +70,10 @@ node () {
 def swarm_testrail_report(String passed_steps, String node_with_reports) {
         // Run pytest tests
         def common = new com.mirantis.mk.Common()
-        def tcp_qa_refs = env.TCP_QA_REFS ?: ''
         def tempest_test_suite_name = env.TEMPEST_TEST_SUITE_NAME
         def test_plan_name_prefix = env.TEST_PLAN_NAME_PREFIX ?: ''
         def parameters = [
                 string(name: 'ENV_NAME', value: "${ENV_NAME}"),
-                string(name: 'LAB_CONFIG_NAME', value: "${LAB_CONFIG_NAME}"),
-                string(name: 'MCP_VERSION', value: "${MCP_VERSION}"),
-                string(name: 'PASSED_STEPS', value: passed_steps),
-                string(name: 'PARENT_NODE_NAME', value: node_with_reports),
-                string(name: 'PARENT_WORKSPACE', value: pwd()),
-                string(name: 'TCP_QA_REFS', value: "${tcp_qa_refs}"),
                 string(name: 'TEMPEST_TEST_SUITE_NAME', value: "${tempest_test_suite_name}"),
                 string(name: 'TEST_PLAN_NAME_PREFIX', value: "${test_plan_name_prefix}"),
             ]
@@ -92,11 +85,10 @@ def swarm_testrail_report(String passed_steps, String node_with_reports) {
 
 def upload_results_to_testrail(report_name, testSuiteName, methodname, testrail_name_template, reporter_extra_options=[]) {
   def venvPath = '/home/jenkins/venv_testrail_reporter'
-  def testPlanDesc = env.LAB_CONFIG_NAME
   def testrailURL = "https://mirantis.testrail.com"
   def testrailProject = "Mirantis Cloud Platform"
   def testPlanNamePrefix = env.TEST_PLAN_NAME_PREFIX ?: "[2019.2.0-update]System"
-  def testPlanName = "${testPlanNamePrefix}-${MCP_VERSION}-${new Date().format('yyyy-MM-dd')}"
+  def testPlanName = "${testPlanNamePrefix}-${ENV_NAME}-${new Date().format('yyyy-MM-dd')}"
   def testrailMilestone = "MCP1.1"
   def testrailCaseMaxNameLenght = 250
   def jobURL = env.BUILD_URL
