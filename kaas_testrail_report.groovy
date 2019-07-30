@@ -32,7 +32,7 @@ node ("${PARENT_NODE_NAME}") {
             def testrail_name_template = ''
             def reporter_extra_options = []
 
-            def reports_urls = [,]
+            def reports_urls = [:]
 
             if (deployment_report_name) {
                 stage("Deployment report") {
