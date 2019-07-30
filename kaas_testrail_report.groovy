@@ -17,10 +17,8 @@ if (! env.PARENT_NODE_NAME) {
 currentBuild.description = "${PARENT_NODE_NAME}:${ENV_NAME}"
 
 timeout(time: 2, unit: 'HOURS') {
-node ("${PARENT_NODE_NAME}") {
-    if (! fileExists("${PARENT_WORKSPACE}")) {
-        error "'PARENT_WORKSPACE' contains path to non-existing directory ${PARENT_WORKSPACE} on the node '${PARENT_NODE_NAME}'."
-    }
+node () {
+    
     dir("${PARENT_WORKSPACE}") {
         def description = ''
         def exception_message = ''
@@ -171,4 +169,33 @@ def upload_results_to_testrail(report_name, testSuiteName, methodname, testrail_
     }
     return ret
   }
+}
+
+def run_cmd(String cmd, Boolean returnStdout=false) {
+    def common = new com.mirantis.mk.Common()
+    common.printMsg("Run shell command:\n" + cmd, "blue")
+    def VENV_PATH='.venv-si-tests'
+    def stderr_path = "/tmp/${JOB_NAME}_${BUILD_NUMBER}_stderr.log"
+    def script = """#!/bin/bash
+        set +x
+        echo 'activate python virtualenv ${VENV_PATH}'
+        . ${VENV_PATH}/bin/activate
+        bash -c -e -x '${cmd.stripIndent()}' 2>${stderr_path}
+    """
+    try {
+        def stdout = sh(script: script, returnStdout: returnStdout)
+        def stderr = readFile("${stderr_path}")
+        def error_message = "\n<<<<<< STDERR: >>>>>>\n" + stderr
+        common.printMsg(error_message, "yellow")
+        common.printMsg("", "reset")
+        return stdout
+    } catch (e) {
+        def stderr = readFile("${stderr_path}")
+        def error_message = e.message + "\n<<<<<< STDERR: >>>>>>\n" + stderr
+        common.printMsg(error_message, "red")
+        common.printMsg("", "reset")
+        throw new Exception(error_message)
+    } finally {
+        sh(script: "rm ${stderr_path} || true")
+    }
 }
