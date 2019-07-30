@@ -38,21 +38,20 @@ runScenario(scenario, total_timeout.toInteger())
 
 
 
-def runJob(step, global_variables) {
-    def job_name = step['job']
-    def job_parameters = []
+def runJob(job_name, job_parameters, global_variables) {
+    def parameters = []
 
-    // Collect required job_parameters from 'global_variables' or 'env'
-    for (param in step['parameters']) {
+    // Collect required parameters from 'global_variables' or 'env'
+    for (param in job_parameters) {
         println "param is ${param.key} and ${param.value}"
         if (!global_variables[param.value.use_variable]) {
             global_variables[param.value.use_variable] = env[param.value.use_variable] ?: ''
         }
-        job_parameters.add([$class: "${param.value.type}", name: "${param.key}", value: global_variables[param.value.use_variable]])
+        parameters.add([$class: "${param.value.type}", name: "${param.key}", value: global_variables[param.value.use_variable]])
     }
 
     // Build the job
-    def job_info = build job: "${job_name}", parameters: job_parameters, propagate: false
+    def job_info = build job: "${job_name}", parameters: parameters, propagate: false
     return job_info
 }
 
@@ -80,27 +79,36 @@ def storeArtifacts(build_url, step, global_variables) {
 }
 
 def runSteps(steps, global_variables, failed_jobs) {
+    currentBuild.description = ''
     for (step in steps) {
         stage("Running job ${step['job']}") {
 
+            def job_name = step['job']
+            def job_parameters = step['parameters']
             // Collect job parameters and run the job
-            def job_info = runJob(step, global_variables)
+            def job_info = runJob(job_name, job_parameters, global_variables)
             def job_result = job_info.getResult()
             def build_url = job_info.getAbsoluteUrl()
+            def build_description = job_info.getDescription()
 
-            // Check the job result
-            if (job_result == "SUCCESS") {
-                // Store links to the resulting artifacts into 'global_variables'
-                storeArtifacts(build_url, step, global_variables)
-            } else {
-                // Job failed, fail the build or keep going depending on 'ignore_failed' flag
+            currentBuild.description += "<a href=${build_url}>${job_name}</a>: ${job_result}<br>"
+            // Import the remote build description into the current build
+            if (build_description) { // TODO -  add also the job status
+                currentBuild.description += build_description
+            }
+
+            // Store links to the resulting artifacts into 'global_variables'
+            storeArtifacts(build_url, step, global_variables)
+
+            // Job failed, fail the build or keep going depending on 'ignore_failed' flag
+            if (job_result != "SUCCESS") {
                 def job_ignore_failed = step['ignore_failed'] ?: false
                 failed_jobs[build_url] = job_result
                 if (job_ignore_failed) {
                     println "Job ${build_url} finished with result: ${job_result}"
                 } else {
                     currentBuild.result = job_result
-                    throw new Exception("Job ${build_url} finished with result: ${job_result}")
+                    error "Job ${build_url} finished with result: ${job_result}"
                 }
             } // if (job_result == "SUCCESS")
         } // stage ("Running job ${step['job']}")
