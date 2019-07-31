@@ -12,7 +12,7 @@ def common = new com.mirantis.mk.Common()
 
 node () {
     stage("cases report") {
-        report_name = ${venvPath}/bootstrap_kaas_result.xml
+        report_name = "${venvPath}/bootstrap_kaas_result.xml"
         testSuiteName = "[MCP_X] integration cases"
         methodname = "{methodname}"
         testrail_name_template = "{title}"
