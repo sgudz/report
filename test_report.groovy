@@ -12,7 +12,7 @@ def common = new com.mirantis.mk.Common()
 
 node () {
     stage("cases report") {
-        report_name = "${venvPath}/bootstrap_kaas_result.xml"
+        report_name = env.REPORT_SI_KAAS_BOOTSTRAP
         testSuiteName = "[MCP_X] integration cases"
         methodname = "{methodname}"
         testrail_name_template = "{title}"
@@ -61,7 +61,7 @@ def upload_results_to_testrail(report_name, testSuiteName, methodname, testrail_
 
       def script = """
         . ${venvPath}/bin/activate
-        wget -O '${report_name}' ${venvPath}
+        wget -O '${venvPath}/bootstrap_kaas_result.xml' '${report_name}' 
         set -ex
         report ${reporterOptions.join(' ')} '${venvPath}/bootstrap_kaas_result.xml'
       """
