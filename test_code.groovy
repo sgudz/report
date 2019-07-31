@@ -7,6 +7,6 @@ node () {
       String file_name = file[file.lenght-1]
       echo "${file_name}"
       echo "${element.key} ${element.value}"
-      wget -O ${workspace}/${filename} ${element.value}
+      wget -O "\${workspace}/\${filename}" "\${element.value}"
   }
 }
