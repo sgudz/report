@@ -100,9 +100,8 @@ def upload_results_to_testrail(report_name, testSuiteName, methodname, testrail_
 
       def script = """
         . ${venvPath}/bin/activate
-        wget -O '${workspace}/bootstrap_kaas_result.xml' '${report_name}' 
         set -ex
-        report ${reporterOptions.join(' ')} '${workspace}/bootstrap_kaas_result.xml'
+        report ${reporterOptions.join(' ')} '${workspace}/${report_name}'
       """
 
       def testrail_cred_id = params.TESTRAIL_CRED ?: 'testrail_system_tests'
