@@ -14,7 +14,8 @@ node () {
 
   stage ("Report to testrail") {
       reports_map.each { key, val ->
-        report_file = val.substring(val.lastIndexOf('/') +1)
+        report_name = val.substring(val.lastIndexOf('/') +1)
+        println "Reporting ${report_name}"
         testSuiteName = "[MCP2.0]Integration automation"
         methodname = "{methodname}"
         testrail_name_template = "{title}"
