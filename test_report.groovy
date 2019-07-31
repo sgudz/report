@@ -13,7 +13,7 @@ def common = new com.mirantis.mk.Common()
 node () {
     stage("cases report") {
         report_name = env.REPORT_SI_KAAS_BOOTSTRAP
-        testSuiteName = "[MCP_X] integration cases"
+        testSuiteName = "[MCP2.0]Integration automation"
         methodname = "{methodname}"
         testrail_name_template = "{title}"
         reporter_extra_options = [
