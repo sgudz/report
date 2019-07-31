@@ -9,7 +9,6 @@
  */
 
 def common = new com.mirantis.mk.Common()
-def report_filename = env.REPORT_SI_KAAS_BOOTSTRAP ?: "test"
 
 node () {
     stage("tcp-qa cases report") {
@@ -36,6 +35,7 @@ def upload_results_to_testrail(report_name, testSuiteName, methodname, testrail_
       def testrailURL = "https://mirantis.testrail.com"
       def testrailProject = "Mirantis Cloud Platform"
       def testPlanNamePrefix = env.TEST_PLAN_NAME_PREFIX ?: "[2019.2.0-update]System"
+      report_filename = env.REPORT_SI_KAAS_BOOTSTRAP ?: "test"
       def testPlanName = "${testPlanNamePrefix}-${ENV_NAME}-${new Date().format('yyyy-MM-dd')}"
       def testPlanDesc = env.ENV_NAME
       def testrailMilestone = "MCP1.1"
@@ -61,7 +61,7 @@ def upload_results_to_testrail(report_name, testSuiteName, methodname, testrail_
 
       def script = """
         . ${venvPath}/bin/activate
-        wget -O ${report_filename} $venvPath
+        wget -O report_filename $venvPath
         set -ex
         report ${reporterOptions.join(' ')} '${report_name}'
       """
