@@ -11,7 +11,7 @@
 def common = new com.mirantis.mk.Common()
 
 node () {
-    stage("tcp-qa cases report") {
+    stage("cases report") {
         testSuiteName = "[MCP_X] integration cases"
         methodname = "{methodname}"
         testrail_name_template = "{title}"
@@ -30,7 +30,7 @@ node () {
         }
     } // stage
 } // node
-def upload_results_to_testrail(report_name, testSuiteName, methodname, testrail_name_template, reporter_extra_options=[]) {
+def upload_results_to_testrail(report_filename, testSuiteName, methodname, testrail_name_template, reporter_extra_options=[]) {
       def venvPath = '/home/jenkins/venv_testrail_reporter'
       def testrailURL = "https://mirantis.testrail.com"
       def testrailProject = "Mirantis Cloud Platform"
@@ -63,7 +63,7 @@ def upload_results_to_testrail(report_name, testSuiteName, methodname, testrail_
         . ${venvPath}/bin/activate
         wget -O '${report_filename}' ${venvPath}
         set -ex
-        report ${reporterOptions.join(' ')} '${report_name}'
+        report ${reporterOptions.join(' ')} '${venvPath}/bootstrap_kaas_result.xml'
       """
 
       def testrail_cred_id = params.TESTRAIL_CRED ?: 'testrail_system_tests'
