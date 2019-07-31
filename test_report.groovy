@@ -12,6 +12,7 @@ def common = new com.mirantis.mk.Common()
 
 node () {
     stage("cases report") {
+        report_name = env.REPORT_SI_KAAS_BOOTSTRAP
         testSuiteName = "[MCP_X] integration cases"
         methodname = "{methodname}"
         testrail_name_template = "{title}"
@@ -20,7 +21,7 @@ node () {
         "--testrail-case-custom-fields {\\\"custom_qa_team\\\":\\\"9\\\"}",
         "--testrail-case-section-name \'All\'",
         ]
-        ret = upload_results_to_testrail(report_filename, testSuiteName, methodname, testrail_name_template, reporter_extra_options)
+        ret = upload_results_to_testrail(report_name, testSuiteName, methodname, testrail_name_template, reporter_extra_options)
         common.printMsg(ret.stdout, "blue")
         report_url = ret.stdout.split("\n").each {
         if (it.contains("[TestRun URL]")) {
@@ -30,12 +31,11 @@ node () {
         }
     } // stage
 } // node
-def upload_results_to_testrail(report_filename, testSuiteName, methodname, testrail_name_template, reporter_extra_options=[]) {
+def upload_results_to_testrail(report_name, testSuiteName, methodname, testrail_name_template, reporter_extra_options=[]) {
       def venvPath = '/home/jenkins/venv_testrail_reporter'
       def testrailURL = "https://mirantis.testrail.com"
       def testrailProject = "Mirantis Cloud Platform"
       def testPlanNamePrefix = env.TEST_PLAN_NAME_PREFIX ?: "[2019.2.0-update]System"
-      def report_filename = env.REPORT_SI_KAAS_BOOTSTRAP ?: "test"
       def testPlanName = "${testPlanNamePrefix}-${ENV_NAME}-${new Date().format('yyyy-MM-dd')}"
       def testPlanDesc = env.ENV_NAME
       def testrailMilestone = "MCP1.1"
@@ -61,7 +61,7 @@ def upload_results_to_testrail(report_filename, testSuiteName, methodname, testr
 
       def script = """
         . ${venvPath}/bin/activate
-        wget -O '${report_filename}' ${venvPath}
+        wget -O '${report_name}' ${venvPath}
         set -ex
         report ${reporterOptions.join(' ')} '${venvPath}/bootstrap_kaas_result.xml'
       """
