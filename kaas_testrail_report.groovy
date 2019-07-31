@@ -10,8 +10,6 @@
 
 def common = new com.mirantis.mk.Common()
 
-def report_filename = env.REPORT_SI_KAAS_BOOTSTRAP
-
 timeout(time: 2, unit: 'HOURS') {
 node () {
     
@@ -85,6 +83,7 @@ def swarm_testrail_report(String passed_steps, String node_with_reports) {
 
 def upload_results_to_testrail(report_name, testSuiteName, methodname, testrail_name_template, reporter_extra_options=[]) {
   def venvPath = '/home/jenkins/venv_testrail_reporter'
+  def report_filename = env.REPORT_SI_KAAS_BOOTSTRAP
   def testrailURL = "https://mirantis.testrail.com"
   def testrailProject = "Mirantis Cloud Platform"
   def testPlanNamePrefix = env.TEST_PLAN_NAME_PREFIX ?: "[2019.2.0-update]System"
