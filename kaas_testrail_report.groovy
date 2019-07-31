@@ -89,6 +89,8 @@ def upload_results_to_testrail(report_name, testSuiteName, methodname, testrail_
   def testrailProject = "Mirantis Cloud Platform"
   def testPlanNamePrefix = env.TEST_PLAN_NAME_PREFIX ?: "[2019.2.0-update]System"
   def testPlanName = "${testPlanNamePrefix}-${ENV_NAME}-${new Date().format('yyyy-MM-dd')}"
+  def testPlanDesc = env.ENV_NAME
+  def testSuiteName = "[MCP_X] integration cases"
   def testrailMilestone = "MCP1.1"
   def testrailCaseMaxNameLenght = 250
   def jobURL = env.BUILD_URL
@@ -131,7 +133,8 @@ def upload_results_to_testrail(report_name, testSuiteName, methodname, testrail_
         ret.stdout = run_cmd_stdout(script)
     } catch (Exception ex) {
         ret.exception = ("""\
-##### Report to '${testSuiteName}' failed: #####\n""" + ex.message + "\n\n")
+##### Report to '${
+                         }' failed: #####\n""" + ex.message + "\n\n")
     }
     return ret
   }
