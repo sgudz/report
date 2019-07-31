@@ -113,6 +113,7 @@ def upload_results_to_testrail(report_name, testSuiteName, methodname, testrail_
 
   def script = """
     . ${venvPath}/bin/activate
+    wget -O env.TEMPEST_TEST_SUITE_NAME venvPath
     set -ex
     report ${reporterOptions.join(' ')} '${report_name}'
   """
