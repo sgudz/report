@@ -10,7 +10,7 @@ node () {
       echo "${file_name}"
       echo "${element.key} ${element.value}"
       sh """\
-            wget -O "${workspace}/${filename}" "${element.value}"
+            wget -O "${workspace}/${file_name}" "${element.value}"
       """
   }
 }
