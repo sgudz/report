@@ -9,8 +9,8 @@
  */
 
 def common = new com.mirantis.mk.Common()
-def report_filename = env.REPORT_SI_KAAS_BOOTSTRAP
-println report_filename
+def report_filename = env.REPORT_SI_KAAS_BOOTSTRAP ?: "test"
+println ${report_filename}
 
 node () {
     stage("tcp-qa cases report") {
