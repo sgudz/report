@@ -4,4 +4,5 @@ def reports_map = ["bootstrap_report": env.BOOTSTRAP_REPORT,
 
 for (element in reports_map) {
     echo "${element.key} ${element.value}"
+    wget -O "${workspace}/${element.value}" 
 }
