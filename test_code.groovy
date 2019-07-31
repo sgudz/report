@@ -3,14 +3,15 @@ def reports_map = ["bootstrap_report": env.BOOTSTRAP_REPORT,
 
 node () {
   stage ("Download reports") {
-      for (element in reports_map) {
+      //for (element in reports_map) {
+      reports_map.each { key, val ->
           // String[] file = element.value.split("/")
           // String file_name = file[file.lenght - 1]
-          int index = element.value.lastIndexOf('/');
-          String file_name = element.value.substring(index +1);
+          int index = val.lastIndexOf('/');
+          String file_name = val.substring(index +1);
           echo "${file_name}"
-          echo "${element.key} ${element.value}"
-          run_cmd("wget -O ${workspace}/${file_name} ${element.value}")
+          echo "${key} ${val}"
+          run_cmd("wget -O ${workspace}/${file_name} ${val}")
       }
   } //stage
 } //node
