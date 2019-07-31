@@ -12,10 +12,27 @@ def common = new com.mirantis.mk.Common()
 def report_filename = env.REPORT_SI_KAAS_BOOTSTRAP
 println ${report_filename}
 
-timeout(time: 2, unit: 'HOURS') {
 node () {
-    
-    def upload_results_to_testrail(report_name, testSuiteName, methodname, testrail_name_template, reporter_extra_options=[]) {
+    stage("tcp-qa cases report") {
+        testSuiteName = "[MCP_X] integration cases"
+        methodname = "{methodname}"
+        testrail_name_template = "{title}"
+        reporter_extra_options = [
+        "--testrail-add-missing-cases",
+        "--testrail-case-custom-fields {\\\"custom_qa_team\\\":\\\"9\\\"}",
+        "--testrail-case-section-name \'All\'",
+        ]
+        ret = upload_results_to_testrail(report_filename, testSuiteName, methodname, testrail_name_template, reporter_extra_options)
+        common.printMsg(ret.stdout, "blue")
+        report_url = ret.stdout.split("\n").each {
+        if (it.contains("[TestRun URL]")) {
+            common.printMsg("Found report URL: " + it.trim().split().last(), "blue")
+            description += "<a href=" + it.trim().split().last() + ">${testSuiteName}</a><br>"
+            }
+        }
+    } // stage
+} // node
+def upload_results_to_testrail(report_name, testSuiteName, methodname, testrail_name_template, reporter_extra_options=[]) {
       def venvPath = '/home/jenkins/venv_testrail_reporter'
       def testrailURL = "https://mirantis.testrail.com"
       def testrailProject = "Mirantis Cloud Platform"
@@ -70,6 +87,4 @@ node () {
         }
         return ret
       }
-    }
-}
 }
