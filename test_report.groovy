@@ -10,7 +10,7 @@
 
 def common = new com.mirantis.mk.Common()
 def report_filename = env.REPORT_SI_KAAS_BOOTSTRAP
-println ${report_filename}
+println report_filename
 
 node () {
     stage("tcp-qa cases report") {
@@ -79,11 +79,10 @@ def upload_results_to_testrail(report_name, testSuiteName, methodname, testrail_
         ret.stdout = ''
         ret.exception = ''
         try {
-            ret.stdout = run_cmd(script: script, returnStdout: true)
+            ret.stdout = run_cmd_stdout(script: script)
         } catch (Exception ex) {
             ret.exception = ("""\
-    ##### Report to '${
-                             }' failed: #####\n""" + ex.message + "\n\n")
+            ##### Report to failed: #####\n""" + ex.message + "\n\n")
         }
         return ret
       }
@@ -115,4 +114,7 @@ def run_cmd(String cmd, Boolean returnStdout=false) {
     } finally {
         sh(script: "rm ${stderr_path} || true")
     }
+}
+def run_cmd_stdout(cmd) {
+    return run_cmd(cmd, true)
 }
