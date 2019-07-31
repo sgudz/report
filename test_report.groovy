@@ -12,7 +12,6 @@ def common = new com.mirantis.mk.Common()
 def report_filename = env.REPORT_SI_KAAS_BOOTSTRAP ?: "test"
 
 node () {
-    println ${report_filename}
     stage("tcp-qa cases report") {
         testSuiteName = "[MCP_X] integration cases"
         methodname = "{methodname}"
