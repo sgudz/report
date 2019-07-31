@@ -9,7 +9,8 @@ node () {
       String file_name = element.value.substring(index +1);
       echo "${file_name}"
       echo "${element.key} ${element.value}"
-      //wget -O "${workspace}/${filename}" "${element.value}"
+      sh """\
+            wget -O "${workspace}/${filename}" "${element.value}"
+      """
   }
 }
-lastone = last(one.split("-"));
