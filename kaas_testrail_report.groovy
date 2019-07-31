@@ -90,7 +90,6 @@ def upload_results_to_testrail(report_name, testSuiteName, methodname, testrail_
   def testPlanNamePrefix = env.TEST_PLAN_NAME_PREFIX ?: "[2019.2.0-update]System"
   def testPlanName = "${testPlanNamePrefix}-${ENV_NAME}-${new Date().format('yyyy-MM-dd')}"
   def testPlanDesc = env.ENV_NAME
-  def testSuiteName = "[MCP_X] integration cases"
   def testrailMilestone = "MCP1.1"
   def testrailCaseMaxNameLenght = 250
   def jobURL = env.BUILD_URL
