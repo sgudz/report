@@ -10,7 +10,7 @@
 
 def common = new com.mirantis.mk.Common()
 
-def report_filename = "./artifacts/bootstrap_kaas_result.xml"
+def report_filename = env.REPORT_SI_KAAS_BOOTSTRAP
 
 timeout(time: 2, unit: 'HOURS') {
 node () {
@@ -113,7 +113,7 @@ def upload_results_to_testrail(report_name, testSuiteName, methodname, testrail_
 
   def script = """
     . ${venvPath}/bin/activate
-    wget -O env.TEMPEST_TEST_SUITE_NAME venvPath
+    wget -O report_filename $venvPath
     set -ex
     report ${reporterOptions.join(' ')} '${report_name}'
   """
