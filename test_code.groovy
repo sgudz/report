@@ -9,8 +9,6 @@ node () {
       String file_name = element.value.substring(index +1);
       echo "${file_name}"
       echo "${element.key} ${element.value}"
-      sh """\
-            wget -O "${workspace}/${file_name}" "${element.value}"
-      """
+      sh "wget -O ${workspace}/${file_name} ${element.value}"
   }
 }
