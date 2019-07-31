@@ -107,8 +107,8 @@ timeout(time: env.BOOTSTRAP_TIMEOUT.toInteger(), unit: 'SECONDS') {
                                usernameVariable: 'OS_USERNAME']
                     ]) {
                             // Run bootstrap test
-                            // run_cmd("py.test --junit-xml=${report_filename} ${env.RUN_TESTS}")
-                            run_cmd("ls -l > ${report_filename}")
+                            run_cmd("py.test --junit-xml=${report_filename} ${env.RUN_TESTS}")
+                            // run_cmd("ls -l > ${report_filename}")
                     }
                 }
             } // stage
