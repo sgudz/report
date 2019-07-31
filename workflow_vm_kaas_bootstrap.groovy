@@ -26,6 +26,9 @@ finnaly:
     REPORT_SI_KAAS_BOOTSTRAP:
       type: StringParameterValue
       use_variable: REPORT_SI_KAAS_BOOTSTRAP
+    ENV_NAME:
+      type: StringParameterValue
+      use_variable: ENV_NAME
   artifacts:
     A1: example.yaml
     A2: example222.yaml
