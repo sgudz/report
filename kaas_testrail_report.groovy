@@ -129,7 +129,7 @@ def upload_results_to_testrail(report_name, testSuiteName, methodname, testrail_
     ret.stdout = ''
     ret.exception = ''
     try {
-        ret.stdout = run_cmd_stdout(script)
+        ret.stdout = run_cmd(script)
     } catch (Exception ex) {
         ret.exception = ("""\
 ##### Report to '${
