@@ -6,10 +6,11 @@ node () {
   def workspace = common.getWorkspace()
   def venvPath = "$workspace/testrail-venv"
   def testrailReporterPackage = 'git+git://github.com/gdyuldin/testrail_reporter.git'
+  def testrailReporterVersion = 'bdba546'
   sh """
         virtualenv ${venvPath}
         . ${venvPath}/bin/activate
-        pip install --upgrade ${testrailReporterPackage}
+        pip install --upgrade ${testrailReporterPackage}@${testrailReporterVersion}
       """
   stage ("Download reports") {
       reports_map.each { key, val ->
