@@ -5,8 +5,7 @@ def reports_map = ["bootstrap_report": env.BOOTSTRAP_REPORT,
 node () {
   stage ("Download reports") {
       reports_map.each { key, val ->
-          int index = val.lastIndexOf('/');
-          String file_name = val.substring(index +1);
+          file_name = val.substring(val.lastIndexOf('/') +1);
           echo "${file_name}"
           echo "${key} ${val}"
           run_cmd("wget -O ${workspace}/${file_name} ${val}")
