@@ -3,6 +3,7 @@ def reports_map = ["bootstrap_report": env.REPORT_SI_KAAS_BOOTSTRAP,
                    "ui_test_report": env.REPORT_SI_KAAS_UI]
 
 node () {
+  def description = ''
   def workspace = common.getWorkspace()
   def venvPath = "$workspace/testrail-venv"
   def testrailReporterPackage = 'git+https://github.com/dis-xcom/testrail_reporter'
