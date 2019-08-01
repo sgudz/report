@@ -6,7 +6,7 @@ node () {
   def workspace = common.getWorkspace()
   def venvPath = "$workspace/testrail-venv"
   def testrailReporterPackage = 'git+git://github.com/gdyuldin/testrail_reporter.git'
-  def testrailReporterVersion = 'bdba546'
+  def testrailReporterVersion = '6ba411f'
   sh """
         virtualenv ${venvPath}
         . ${venvPath}/bin/activate
