@@ -4,6 +4,13 @@ def reports_map = ["bootstrap_report": env.BOOTSTRAP_REPORT,
 
 node () {
   def workspace = common.getWorkspace()
+  def venvPath = "$workspace/testrail-venv"
+  def testrailReporterPackage = 'git+git://github.com/gdyuldin/testrail_reporter.git'
+  sh """
+        virtualenv ${venvPath}
+        . ${venvPath}/bin/activate
+        pip install --upgrade ${testrailReporterPackage}
+      """
   stage ("Download reports") {
       reports_map.each { key, val ->
         if (val) {
@@ -77,9 +84,6 @@ def run_cmd_stdout(cmd) {
 }
 
 def upload_results_to_testrail(report_name, testSuiteName, methodname, testrail_name_template, reporter_extra_options=[]) {
-      def venvPath = "$workspace/testrail-venv"
-      def testrailReporterPackage = 'git+git://github.com/gdyuldin/testrail_reporter.git'
-      //def testrailReporterVersion = 'eee508d'
       def testrailURL = "https://mirantis.testrail.com"
       def testrailProject = "Mirantis Cloud Platform"
       def testPlanNamePrefix = env.TEST_PLAN_NAME_PREFIX ?: "[KaaS]System"
@@ -106,11 +110,6 @@ def upload_results_to_testrail(report_name, testSuiteName, methodname, testrail_
         "--testrail-case-max-name-lenght ${testrailCaseMaxNameLenght}",
       ] + reporter_extra_options
 
-      sh """
-        virtualenv ${venvPath}
-        . ${venvPath}/bin/activate
-        pip install --upgrade ${testrailReporterPackage}
-      """
       def script = """
         . ${venvPath}/bin/activate
         set -ex
