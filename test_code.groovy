@@ -19,6 +19,7 @@ node () {
 
   stage ("Report to testrail") {
       reports_map.each { key, val ->
+        if (val) {
         report_name = val.substring(val.lastIndexOf('/') +1)
         println "Reporting ${report_name}"
         testSuiteName = "[MCP2.0]Integration automation"
@@ -36,8 +37,9 @@ node () {
             common.printMsg("Found report URL: " + it.trim().split().last(), "blue")
             description += "<a href=" + it.trim().split().last() + ">${testSuiteName}</a><br>"
             }
-        }
-      }
+        } // report url
+        } // if 
+      } // iterate map
   } //stage
 } //node
 
