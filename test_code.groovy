@@ -7,7 +7,7 @@ node () {
       reports_map.each { key, val ->
         if (val) {
           file_name = val.substring(val.lastIndexOf('/') +1);
-          common.printMsg ("Downloading ${file_name} report to ${workspace}, "purple")
+          common.printMsg("Downloading ${file_name} report to ${workspace}, "purple")
           run_cmd("wget -O ${workspace}/${file_name} ${val}")
         }
         else {
