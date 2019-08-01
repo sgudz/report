@@ -84,6 +84,7 @@ def run_cmd_stdout(cmd) {
 }
 
 def upload_results_to_testrail(report_name, testSuiteName, methodname, testrail_name_template, reporter_extra_options=[]) {
+      def venvPath = "$workspace/testrail-venv"
       def testrailURL = "https://mirantis.testrail.com"
       def testrailProject = "Mirantis Cloud Platform"
       def testPlanNamePrefix = env.TEST_PLAN_NAME_PREFIX ?: "[KaaS]System"
