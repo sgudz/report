@@ -20,25 +20,25 @@ node () {
   stage ("Report to testrail") {
       reports_map.each { key, val ->
         if (val) {
-        report_name = val.substring(val.lastIndexOf('/') +1)
-        println "Reporting ${report_name}"
-        testSuiteName = "[MCP2.0]Integration automation"
-        methodname = "{methodname}"
-        testrail_name_template = "{title}"
-        reporter_extra_options = [
-        "--testrail-add-missing-cases",
-        "--testrail-case-custom-fields {\\\"custom_qa_team\\\":\\\"9\\\"}",
-        "--testrail-case-section-name \'All\'",
-        ]
-        ret = upload_results_to_testrail(report_name, testSuiteName, methodname, testrail_name_template, reporter_extra_options)
-        common.printMsg(ret.stdout, "blue")
-        report_url = ret.stdout.split("\n").each {
-        if (it.contains("[TestRun URL]")) {
-            common.printMsg("Found report URL: " + it.trim().split().last(), "blue")
-            description += "<a href=" + it.trim().split().last() + ">${testSuiteName}</a><br>"
+          report_name = val.substring(val.lastIndexOf('/') +1)
+          println "Reporting ${report_name}"
+          testSuiteName = "[MCP2.0]Integration automation"
+          methodname = "{methodname}"
+          testrail_name_template = "{title}"
+          reporter_extra_options = [
+            "--testrail-add-missing-cases",
+            "--testrail-case-custom-fields {\\\"custom_qa_team\\\":\\\"9\\\"}",
+            "--testrail-case-section-name \'All\'",
+            ]
+          ret = upload_results_to_testrail(report_name, testSuiteName, methodname, testrail_name_template, reporter_extra_options)
+          common.printMsg(ret.stdout, "blue")
+          report_url = ret.stdout.split("\n").each {
+            if (it.contains("[TestRun URL]")) {
+              common.printMsg("Found report URL: " + it.trim().split().last(), "blue")
+              description += "<a href=" + it.trim().split().last() + ">${testSuiteName}</a><br>"
             }
-        } // report url
-        } // if 
+          } // report url
+        } // if val
       } // iterate map
   } //stage
 } //node
