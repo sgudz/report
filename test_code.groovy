@@ -3,6 +3,7 @@ def reports_map = ["bootstrap_report": env.BOOTSTRAP_REPORT,
                    "kubeconfig": env.KUBECONFIG, "management_logs": env.MANAGEMENT_LOGS]
 
 node () {
+  def workspace = common.getWorkspace()
   stage ("Download reports") {
       reports_map.each { key, val ->
         if (val) {
