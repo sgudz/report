@@ -79,7 +79,7 @@ def run_cmd_stdout(cmd) {
 def upload_results_to_testrail(report_name, testSuiteName, methodname, testrail_name_template, reporter_extra_options=[]) {
       def venvPath = "$workspace/testrail-venv"
       def testrailReporterPackage = 'git+git://github.com/gdyuldin/testrail_reporter.git'
-      def testrailReporterVersion = 'eee508d'
+      //def testrailReporterVersion = 'eee508d'
       def testrailURL = "https://mirantis.testrail.com"
       def testrailProject = "Mirantis Cloud Platform"
       def testPlanNamePrefix = env.TEST_PLAN_NAME_PREFIX ?: "[KaaS]System"
@@ -109,7 +109,7 @@ def upload_results_to_testrail(report_name, testSuiteName, methodname, testrail_
       sh """
         virtualenv ${venvPath}
         . ${venvPath}/bin/activate
-        pip install --upgrade ${testrailReporterPackage}@${testrailReporterVersion}
+        pip install --upgrade ${testrailReporterPackage}
       """
       def script = """
         . ${venvPath}/bin/activate
