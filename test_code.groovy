@@ -1,6 +1,6 @@
 def common = new com.mirantis.mk.Common()
-def reports_map = ["bootstrap_report": env.BOOTSTRAP_REPORT,
-                   "kubeconfig": env.KUBECONFIG, "management_logs": env.MANAGEMENT_LOGS]
+def reports_map = ["bootstrap_report": env.REPORT_SI_KAAS_BOOTSTRAP,
+                   "ui_test_report": env.REPORT_SI_KAAS_UI]
 
 node () {
   def workspace = common.getWorkspace()
