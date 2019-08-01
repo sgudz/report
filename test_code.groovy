@@ -5,12 +5,11 @@ def reports_map = ["bootstrap_report": env.BOOTSTRAP_REPORT,
 node () {
   def workspace = common.getWorkspace()
   def venvPath = "$workspace/testrail-venv"
-  def testrailReporterPackage = 'git+git://github.com/gdyuldin/testrail_reporter.git'
-  def testrailReporterVersion = '6ba411f'
+  def testrailReporterPackage = 'git+https://github.com/dis-xcom/testrail_reporter'
   sh """
         virtualenv ${venvPath}
         . ${venvPath}/bin/activate
-        pip install --upgrade ${testrailReporterPackage}@${testrailReporterVersion}
+        pip install --upgrade ${testrailReporterPackage}
       """
   stage ("Download reports") {
       reports_map.each { key, val ->
