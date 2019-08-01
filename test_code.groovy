@@ -5,11 +5,16 @@ def reports_map = ["bootstrap_report": env.BOOTSTRAP_REPORT,
 node () {
   stage ("Download reports") {
       reports_map.each { key, val ->
+        if (val) {
           file_name = val.substring(val.lastIndexOf('/') +1);
           echo "${file_name}"
           echo "${key} ${val}"
           run_cmd("wget -O ${workspace}/${file_name} ${val}")
-      }
+        }
+        else {
+          echo "$key is not set. Skipping"
+        } //if else
+      } // iterate map
   } //stage
 
   stage ("Report to testrail") {
