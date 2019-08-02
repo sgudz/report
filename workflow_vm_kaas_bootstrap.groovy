@@ -29,6 +29,9 @@ finnaly:
     ENV_NAME:
       type: StringParameterValue
       use_variable: ENV_NAME
+    KAAS_VERSION:
+      type: StringParameterValue
+      use_variable: KAAS_VERSION
   artifacts:
     A1: example.yaml
     A2: example222.yaml
