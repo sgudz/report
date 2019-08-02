@@ -1,3 +1,13 @@
+/**
+ *
+ * Deploy the product cluster using Jenkins master on CICD cluster
+ *
+ * Expected parameters:
+ *   ENV_NAME                      Fuel-devops environment name
+ *   TEMPEST_TEST_SUITE_NAME       Name of tempest suite
+ *   
+ */
+
 def common = new com.mirantis.mk.Common()
 def reports_map = ["bootstrap_report": env.REPORT_SI_KAAS_BOOTSTRAP,
                    "ui_test_report": env.REPORT_SI_KAAS_UI]
@@ -88,7 +98,7 @@ def upload_results_to_testrail(report_name, testSuiteName, methodname, testrail_
       def venvPath = "$workspace/testrail-venv"
       def testrailURL = "https://mirantis.testrail.com"
       def testrailProject = "Mirantis Cloud Platform"
-      def testPlanNamePrefix = env.TEST_PLAN_NAME_PREFIX ?: "[KaaS]System"
+      def testPlanNamePrefix = env.TEST_PLAN_NAME_PREFIX ?: "[MCP2.0]System"
       def testPlanName = "${testPlanNamePrefix}-${ENV_NAME}-${new Date().format('yyyy-MM-dd')}"
       def testPlanDesc = env.ENV_NAME
       def testrailMilestone = "MCP2.0"
