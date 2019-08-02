@@ -31,7 +31,7 @@ node () {
 
         if (env[param.key]) {
             file_name = env[param.key].substring(env[param.key].lastIndexOf('/') +1)
-            xml_report = runCmd("wget ${env[param.key]} -O $workspace/$file_name")
+            xml_report = run_cmd("wget ${env[param.key]} -O $workspace/$file_name")
             println "xml_report: ${xml_report}"
         } else {
             println "Job parameter ${param.key} is not found or empty. Skipping report"
