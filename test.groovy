@@ -26,7 +26,7 @@ node () {
         pip install --upgrade ${testrailReporterPackage}
       """
   // Download reports to workspace
-  stage ("Download reports") {
+  stage ("Download reports and report to testrail") {
       reports_map.each { param ->
         println "job parameter name: ${param.key}"
         println "suite name: ${param.value['suite']}"
