@@ -21,7 +21,8 @@ node () {
         println "suite name: ${param.value['suite']}"
 
         if (env[param.key]) {
-            xml_report = runCmd("wget ${env[param.key]} -O ")
+            file_name = param.value.substring(val.lastIndexOf('/') +1)
+            xml_report = runCmd("wget ${env[param.key]} -O $workspace/$file_name")
             println "xml_report: ${xml_report}"
 
 
