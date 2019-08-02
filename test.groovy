@@ -95,7 +95,7 @@ def upload_results_to_testrail(report_name, testSuiteName, methodname, testrail_
       def testrailProject = "Mirantis Cloud Platform"
       def testPlanNamePrefix = env.TEST_PLAN_NAME_PREFIX ?: "[MCP2.0]System"
       def testPlanName = "${testPlanNamePrefix}-${new Date().format('yyyy-MM-dd')}"
-      def testPlanDesc = env.ENV_NAME
+      def testPlanDesc = "${ENV_NAME}-${KAAS_VERSION}"
       def testrailMilestone = "MCP2.0"
       def testrailCaseMaxNameLenght = 250
       def jobURL = env.BUILD_URL
