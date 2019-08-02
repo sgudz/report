@@ -104,7 +104,7 @@ def upload_results_to_testrail(report_name, testSuiteName, methodname, testrail_
       def testrailURL = "https://mirantis.testrail.com"
       def testrailProject = "Mirantis Cloud Platform"
       def testPlanNamePrefix = env.TEST_PLAN_NAME_PREFIX ?: "[MCP2.0]System"
-      def testPlanName = "${testPlanNamePrefix}-${ENV_NAME}-${new Date().format('yyyy-MM-dd')}"
+      def testPlanName = "${testPlanNamePrefix}-${new Date().format('yyyy-MM-dd')}"
       def testPlanDesc = env.ENV_NAME
       def testrailMilestone = "MCP2.0"
       def testrailCaseMaxNameLenght = 250
