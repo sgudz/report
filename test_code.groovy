@@ -17,11 +17,14 @@ node () {
   def workspace = common.getWorkspace()
   def venvPath = "$workspace/testrail-venv"
   def testrailReporterPackage = 'git+https://github.com/dis-xcom/testrail_reporter'
+  
+  // Install testrail reporter to workspace
   sh """
         virtualenv ${venvPath}
         . ${venvPath}/bin/activate
         pip install --upgrade ${testrailReporterPackage}
       """
+  // Download reports to workspace
   stage ("Download reports") {
       reports_map.each { key, val ->
         if (val) {
@@ -35,6 +38,7 @@ node () {
       } // iterate map
   } //stage
 
+  // Report to testrail
   stage ("Report to testrail") {
       reports_map.each { key, val ->
         if (val) {
