@@ -19,7 +19,9 @@ node () {
   
   // Install testrail reporter to workspace
   sh """
-        virtualenv ${venvPath}
+        if ! [ -d ${venvPath} ]; then
+          virtualenv ${venvPath}
+        fi
         . ${venvPath}/bin/activate
         pip install --upgrade ${testrailReporterPackage}
       """
@@ -28,11 +30,26 @@ node () {
       reports_map.each { param ->
         println "job parameter name: ${param.key}"
         println "suite name: ${param.value['suite']}"
-
         if (env[param.key]) {
-            file_name = env[param.key].substring(env[param.key].lastIndexOf('/') +1)
-            xml_report = run_cmd("wget ${env[param.key]} -O $workspace/$file_name")
-            println "xml_report: ${xml_report}"
+            report_name = env[param.key].substring(env[param.key].lastIndexOf('/') +1)
+            xml_report = run_cmd("wget ${env[param.key]} -O $workspace/$report_name")
+            println "Reporting ${report_name}"
+            testSuiteName = "${param.value['suite']}"
+            methodname = "{methodname}"
+            testrail_name_template = "{title}"
+            reporter_extra_options = [
+              "--testrail-add-missing-cases",
+              "--testrail-case-custom-fields {\\\"custom_qa_team\\\":\\\"9\\\"}",
+              "--testrail-case-section-name \'All\'",
+              ]
+            ret = upload_results_to_testrail(report_name, testSuiteName, methodname, testrail_name_template, reporter_extra_options)
+            common.printMsg(ret.stdout, "blue")
+            report_url = ret.stdout.split("\n").each {
+              if (it.contains("[TestRun URL]")) {
+                common.printMsg("Found report URL: " + it.trim().split().last(), "blue")
+                description += "<a href=" + it.trim().split().last() + ">${testSuiteName}</a><br>"
+              }
+            } // report url
         } else {
             println "Job parameter ${param.key} is not found or empty. Skipping report"
         }
@@ -40,32 +57,6 @@ node () {
   } //stage
 
   // Report to testrail
-  stage ("Report to testrail") {
-      reports_map.each { param ->
-        if (env[param.key]) {
-          report_name = env[param.key].substring(env[param.key].lastIndexOf('/') +1)
-          println "Reporting ${report_name}"
-          testSuiteName = "${param.value['suite']}"
-          methodname = "{methodname}"
-          testrail_name_template = "{title}"
-          reporter_extra_options = [
-            "--testrail-add-missing-cases",
-            "--testrail-case-custom-fields {\\\"custom_qa_team\\\":\\\"9\\\"}",
-            "--testrail-case-section-name \'All\'",
-            ]
-          ret = upload_results_to_testrail(report_name, testSuiteName, methodname, testrail_name_template, reporter_extra_options)
-          common.printMsg(ret.stdout, "blue")
-          report_url = ret.stdout.split("\n").each {
-            if (it.contains("[TestRun URL]")) {
-              common.printMsg("Found report URL: " + it.trim().split().last(), "blue")
-              description += "<a href=" + it.trim().split().last() + ">${testSuiteName}</a><br>"
-            }
-          } // report url
-        } // if val
-      } // iterate map
-  } //stage
-} //node
-
 def run_cmd(String cmd, Boolean returnStdout=false) {
     def common = new com.mirantis.mk.Common()
     common.printMsg("Run shell command:\n" + cmd, "blue")
