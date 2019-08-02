@@ -16,7 +16,7 @@ workflow:
     KUBECONFIG_ARTIFACT: artifacts/management_kubeconfig
     REPORT_SI_KAAS_BOOTSTRAP: artifacts/bootstrap_kaas_result.xml
 
-finnaly:
+finally:
 - job: kaas_testrail_report
   ignore_failed: true
   parameters:
