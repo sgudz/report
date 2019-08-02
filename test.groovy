@@ -17,17 +17,17 @@ node () {
   def venvPath = "$workspace/testrail-venv"
   def testrailReporterPackage = 'git+https://github.com/dis-xcom/testrail_reporter'
   reports_map.each { key, val ->
-        println "job parameter name: ${key.key}"
-        println "suite name: ${key.value['suite']}"
+        println "key ${key}"
+        println "val ${val}"
 
-        if (env[key.key]) {
-            xml_report = runCmd("wget ${env[key.key]} -O ")
-            println "xml_report: ${xml_report}"
+        //if (env[key.key]) {
+        //    xml_report = runCmd("wget ${env[key.key]} -O ")
+        //    println "xml_report: ${xml_report}"
 
 
-        } else {
-            println "Job parameter ${key.key} is not found or empty"
-        }
+        //} else {
+        //    println "Job parameter ${key.key} is not found or empty"
+        //}
 
     }
   
