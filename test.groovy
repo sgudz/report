@@ -2,15 +2,12 @@ def common = new com.mirantis.mk.Common()
 def reports_map = [
    'REPORT_SI_KAAS_BOOTSTRAP': [
        'suite': '[MCP2.0]Integration automation',
-       ....
    ],
    'REPORT_SI_KAAS_UI': [
        'suite': '[MCP2.0]Integration automation',
-       ....
    ],
    'REPORT_KAAS_UI': [
        'suite': 'Kaas UI tests',
-       ....
    ],
 ]
 
