@@ -55,8 +55,7 @@ node () {
         }
     } // iterate map
   } //stage
-
-  // Report to testrail
+}
 def run_cmd(String cmd, Boolean returnStdout=false) {
     def common = new com.mirantis.mk.Common()
     common.printMsg("Run shell command:\n" + cmd, "blue")
