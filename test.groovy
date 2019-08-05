@@ -1,4 +1,5 @@
 def common = new com.mirantis.mk.Common()
+def python = new com.mirantis.mk.Python()
 def reports_map = [
    'REPORT_SI_KAAS_BOOTSTRAP': [
        'suite': '[MCP2.0]Integration automation',
@@ -32,7 +33,7 @@ node () {
         println "suite name: ${param.value['suite']}"
         if (env[param.key]) {
             report_name = env[param.key].substring(env[param.key].lastIndexOf('/') +1)
-            xml_report = run_cmd("wget ${env[param.key]} -O $workspace/$report_name")
+            xml_report = runCmd("wget ${env[param.key]} -O $workspace/$report_name")
             println "Reporting ${report_name}"
             testSuiteName = "${param.value['suite']}"
             methodname = "{methodname}"
@@ -55,42 +56,6 @@ node () {
         }
     } // iterate map
   } //stage
-}
-def run_cmd(String cmd, Boolean returnStdout=false) {
-    def common = new com.mirantis.mk.Common()
-    def python = new com.mirantis.mk.Python()
-    common.printMsg("Run shell command:\n" + cmd, "blue")
-    // def VENV_PATH='runcmd_venv'
-    def workspace = common.getWorkspace()
-    def venv = "runcmd_venv"
-
-    def stderr_path = "/tmp/${JOB_NAME}_${BUILD_NUMBER}_stderr.log"
-    def script = """#!/bin/bash
-        set +x
-        echo 'activate python virtualenv ${venv}'
-        python.setupVirtualenv(venv, 'python2')
-        bash -c -e -x '${cmd.stripIndent()}' 2>${stderr_path}
-    """
-    try {
-        def stdout = sh(script: script, returnStdout: returnStdout)
-        def stderr = readFile("${stderr_path}")
-        def error_message = "\n<<<<<< STDERR: >>>>>>\n" + stderr
-        common.printMsg(error_message, "yellow")
-        common.printMsg("", "reset")
-        return stdout
-    } catch (e) {
-        def stderr = readFile("${stderr_path}")
-        def error_message = e.message + "\n<<<<<< STDERR: >>>>>>\n" + stderr
-        common.printMsg(error_message, "red")
-        common.printMsg("", "reset")
-        throw new Exception(error_message)
-    } finally {
-        sh(script: "rm ${stderr_path} || true")
-    }
-}
-
-def run_cmd_stdout(cmd) {
-    return run_cmd(cmd, true)
 }
 
 def upload_results_to_testrail(report_name, testSuiteName, methodname, testrail_name_template, reporter_extra_options=[]) {
@@ -139,7 +104,7 @@ def upload_results_to_testrail(report_name, testSuiteName, methodname, testrail_
         ret.stdout = ''
         ret.exception = ''
         try {
-            ret.stdout = run_cmd_stdout(script)
+            ret.stdout = runCmd(script)
         } catch (Exception ex) {
             ret.exception = ("""\
             ##### Report to failed: #####\n""" + ex.message + "\n\n")
