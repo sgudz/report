@@ -51,7 +51,7 @@ node (slaveNode) {
         common.printMsg("method name: ${param.value['method']}", 'blue')
         if (env[param.key]) {
             reportName = env[param.key].substring(env[param.key].lastIndexOf('/') + 1)
-            xml_report = python.runCmd("wget ${env[param.key]} -O $workspace/$report_name")
+            xml_report = python.runCmd("wget ${env[param.key]} -O $workspace/$reportName")
             println "Reporting ${reportName}"
             testSuiteName = "${param.value['suite']}"
             methodname = "${param.value['method']}"
