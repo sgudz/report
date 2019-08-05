@@ -46,9 +46,9 @@ node (slaveNode) {
   // Download reports to workspace
   stage ('Download reports and report to testrail') {
       reports_map.each { param ->
-        common.printMsg("job parameter name: ${param.key}", 'blue')
-        common.printMsg("suite name: ${param.value['suite']}", 'blue')
-        common.printMsg("method name: ${param.value['method']}", 'blue')
+        common.printMsg("job parameter name: ${param.key}", 'purple')
+        common.printMsg("suite name: ${param.value['suite']}", 'purple')
+        common.printMsg("method name: ${param.value['method']}", 'purple')
         if (env[param.key]) {
             reportName = env[param.key].substring(env[param.key].lastIndexOf('/') + 1)
             xml_report = python.runCmd("wget ${env[param.key]} -O $workspace/$reportName")
