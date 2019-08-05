@@ -68,7 +68,7 @@ def run_cmd(String cmd, Boolean returnStdout=false) {
     def script = """#!/bin/bash
         set +x
         echo 'activate python virtualenv ${venv}'
-        activate.setupVirtualenv(venv)
+        activate.setupVirtualenv(${venv})
         bash -c -e -x '${cmd.stripIndent()}' 2>${stderr_path}
     """
     try {
