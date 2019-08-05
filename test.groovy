@@ -58,17 +58,17 @@ node () {
 }
 def run_cmd(String cmd, Boolean returnStdout=false) {
     def common = new com.mirantis.mk.Common()
-    def activate = new com.mirantis.mk.Python()
+    def python = new com.mirantis.mk.Python()
     common.printMsg("Run shell command:\n" + cmd, "blue")
-    // def VENV_PATH='/home/jenkins/fuel-devops30'
+    // def VENV_PATH='runcmd_venv'
     def workspace = common.getWorkspace()
-    def venv = "${workspace}/venv"
+    def venv = "runcmd_venv"
 
     def stderr_path = "/tmp/${JOB_NAME}_${BUILD_NUMBER}_stderr.log"
     def script = """#!/bin/bash
         set +x
         echo 'activate python virtualenv ${venv}'
-        activate.setupVirtualenv(path="${venv}")
+        python.setupVirtualenv(venv, 'python2')
         bash -c -e -x '${cmd.stripIndent()}' 2>${stderr_path}
     """
     try {
