@@ -123,7 +123,7 @@ def upload_results_to_testrail(report_name, testSuiteName, methodname, testrail_
         report ${reporterOptions.join(' ')} '${workspace}/${report_name}'
       """
 
-      def testrail_cred_id = params.TESTRAIL_CRED ?: 'testrail_system_tests'
+      def testrail_cred_id = env.TESTRAIL_CREDENTIALS_ID ?: 'system-integration-team-ci'
 
       withCredentials([
                  [$class          : 'UsernamePasswordMultiBinding',
