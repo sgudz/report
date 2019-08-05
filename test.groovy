@@ -103,7 +103,7 @@ def upload_results_to_testrail(report_name, testSuiteName, methodname, testrail_
         ret.stdout = ''
         ret.exception = ''
         try {
-            ret.stdout = python.runCmd(script, virtualenv=venvPath)
+            ret.stdout = python.runCmd(script, virtualenv: venvPath)
         } catch (Exception ex) {
             ret.exception = ("""\
             ##### Report to failed: #####\n""" + ex.message + "\n\n")
