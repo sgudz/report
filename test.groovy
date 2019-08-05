@@ -87,7 +87,6 @@ def upload_results_to_testrail(report_name, testSuiteName, methodname, testrail_
       ] + reporter_extra_options
 
       def script = "report ${reporterOptions.join(' ')} '${workspace}/${report_name}'"
-      common.printMsg("Script: $script", "blue")  
       def testrail_cred_id = env.TESTRAIL_CREDENTIALS_ID ?: 'system-integration-team-ci'
 
       withCredentials([
