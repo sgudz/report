@@ -49,8 +49,7 @@ node () {
         println "suite name: ${param.value['suite']}"
         if (env[param.key]) {
             report_name = env[param.key].substring(env[param.key].lastIndexOf('/') +1)
-            //xml_report = python.runCmd("wget ${env[param.key]} -O $workspace/$report_name")
-            xml_report = "test"
+            xml_report = python.runCmd("wget ${env[param.key]} -O $workspace/$report_name")
             println "Reporting ${report_name}"
             testSuiteName = "${param.value['suite']}"
             methodname = "${param.value['method']}"
@@ -61,15 +60,14 @@ node () {
               "--testrail-case-custom-fields {\\\"custom_qa_team\\\":\\\"9\\\"}",
               "--testrail-case-section-name \'All\'",
               ]
-            //ret = upload_results_to_testrail(report_name, testSuiteName, methodname, testrail_name_template, reporter_extra_options)
-            ret = "test"
-            //common.printMsg(ret.stdout, "blue")
-            //report_url = ret.stdout.split("\n").each {
-            //  if (it.contains("[TestRun URL]")) {
-            //    common.printMsg("Found report URL: " + it.trim().split().last(), "blue")
-            //    description += "<a href=" + it.trim().split().last() + ">${testSuiteName}</a><br>"
-            //  }
-            //} // report url
+            ret = upload_results_to_testrail(report_name, testSuiteName, methodname, testrail_name_template, reporter_extra_options)
+            common.printMsg(ret.stdout, "blue")
+            report_url = ret.stdout.split("\n").each {
+              if (it.contains("[TestRun URL]")) {
+                common.printMsg("Found report URL: " + it.trim().split().last(), "blue")
+                description += "<a href=" + it.trim().split().last() + ">${testSuiteName}</a><br>"
+              }
+            } // report url
         } else {
             //println "Job parameter ${param.key} is not found or empty. Skipping report"
         }
