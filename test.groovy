@@ -49,7 +49,8 @@ node () {
         println "suite name: ${param.value['suite']}"
         if (env[param.key]) {
             report_name = env[param.key].substring(env[param.key].lastIndexOf('/') +1)
-            xml_report = python.runCmd("wget ${env[param.key]} -O $workspace/$report_name")
+            //xml_report = python.runCmd("wget ${env[param.key]} -O $workspace/$report_name")
+            xml_report = "test"
             println "Reporting ${report_name}"
             testSuiteName = "${param.value['suite']}"
             methodname = "${param.value['method']}"
