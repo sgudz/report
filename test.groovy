@@ -1,4 +1,6 @@
-
+def common = new com.mirantis.mk.Common()
+def python = new com.mirantis.mk.Python()
+   
 def reports_map = [
    'REPORT_SI_KAAS_BOOTSTRAP': [
        'suite': '[MCP2.0]Integration automation',
@@ -12,9 +14,6 @@ def reports_map = [
 ]
 
 node () {
-  def common = new com.mirantis.mk.Common()
-  def python = new com.mirantis.mk.Python()
-   
   def description = ''
   def workspace = common.getWorkspace()
   def venvPath = "$workspace/testrail-venv"
@@ -61,7 +60,7 @@ node () {
 }
 
 def upload_results_to_testrail(report_name, testSuiteName, methodname, testrail_name_template, reporter_extra_options=[]) {
-      
+      def python = new com.mirantis.mk.Python()
       def venvPath = "$workspace/testrail-venv"
       def testrailURL = "https://mirantis.testrail.com"
       def testrailProject = "Mirantis Cloud Platform"
