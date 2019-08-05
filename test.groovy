@@ -33,7 +33,7 @@ node () {
         println "suite name: ${param.value['suite']}"
         if (env[param.key]) {
             report_name = env[param.key].substring(env[param.key].lastIndexOf('/') +1)
-            xml_report = runCmd("wget ${env[param.key]} -O $workspace/$report_name")
+            xml_report = python.runCmd("wget ${env[param.key]} -O $workspace/$report_name")
             println "Reporting ${report_name}"
             testSuiteName = "${param.value['suite']}"
             methodname = "{methodname}"
@@ -104,7 +104,7 @@ def upload_results_to_testrail(report_name, testSuiteName, methodname, testrail_
         ret.stdout = ''
         ret.exception = ''
         try {
-            ret.stdout = runCmd(script)
+            ret.stdout = python.runCmd(script)
         } catch (Exception ex) {
             ret.exception = ("""\
             ##### Report to failed: #####\n""" + ex.message + "\n\n")
