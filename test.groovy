@@ -69,9 +69,9 @@ node () {
             //    description += "<a href=" + it.trim().split().last() + ">${testSuiteName}</a><br>"
             //  }
             //} // report url
-        //} else {
+        } else {
             //println "Job parameter ${param.key} is not found or empty. Skipping report"
-        //}
+        }
     } // iterate map
   } //stage
 }
