@@ -60,6 +60,7 @@ node () {
 
 def upload_results_to_testrail(report_name, testSuiteName, methodname, testrail_name_template, reporter_extra_options=[]) {
       def venvPath = "$workspace/testrail-venv"
+      common.printMsg("venvPath: $venvPath", "blue")
       def testrailURL = "https://mirantis.testrail.com"
       def testrailProject = "Mirantis Cloud Platform"
       def testPlanNamePrefix = env.TEST_PLAN_NAME_PREFIX ?: "[MCP2.0]System"
@@ -87,7 +88,7 @@ def upload_results_to_testrail(report_name, testSuiteName, methodname, testrail_
       ] + reporter_extra_options
 
       def script = "report ${reporterOptions.join(' ')} '${workspace}/${report_name}'"
-        
+      common.printMsg("Script: $script", "blue")  
       def testrail_cred_id = env.TESTRAIL_CREDENTIALS_ID ?: 'system-integration-team-ci'
 
       withCredentials([
