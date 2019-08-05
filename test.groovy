@@ -1,15 +1,30 @@
+/**
+ * Report to testrail Pipeline
+ * TESTRAIL_CREDENTIALS_ID - Testrail credentails ID
+ * REPORT_SI_KAAS_BOOTSTRAP: KaaS bootstrap report 
+ * REPORT_SI_KAAS_UI: Integration report of KaaS UI test lauch
+ * REPORT_KAAS_UI: KaaS UI tests results
+ **/
+
 def common = new com.mirantis.mk.Common()
 def python = new com.mirantis.mk.Python()
    
 def reports_map = [
    'REPORT_SI_KAAS_BOOTSTRAP': [
        'suite': '[MCP2.0]Integration automation',
+       'method': '{methodname}'
    ],
    'REPORT_SI_KAAS_UI': [
        'suite': '[MCP2.0]Integration automation',
+       'method': '{methodname}'
    ],
    'REPORT_KAAS_UI': [
        'suite': 'Kaas UI tests',
+       'method': '{methodname}'
+   ],
+   'TEMPEST_REPORT': [
+       'suite': 'WILL_BE_ADDED',
+       'method': '{classname}.{methodname}'
    ],
 ]
 
@@ -37,7 +52,8 @@ node () {
             xml_report = python.runCmd("wget ${env[param.key]} -O $workspace/$report_name")
             println "Reporting ${report_name}"
             testSuiteName = "${param.value['suite']}"
-            methodname = "{methodname}"
+            methodname = "${param.value['method']}"
+            common.printMsg("$methodname", "blue")
             testrail_name_template = "{title}"
             reporter_extra_options = [
               "--testrail-add-missing-cases",
