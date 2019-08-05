@@ -101,7 +101,7 @@ def uploadResultsToTestrail(reportName, testSuiteName, methodname, testrailNameT
         '--testrail-run-update',
         "--testrail-url \"${testrailURL}\"",
         "--testrail-user \"\${TESTRAIL_USER}\"",
-        "--testrail-password \"\${TESTRAIL_PASSWORD}\"",
+        "--testrail-password \"\${TESTRAIL_PASSWORD}@mirantis.com\"",
         "--testrail-project \"${testrailProject}\"",
         "--testrail-plan-name \"${testPlanName}\"",
         "--testrail-milestone \"${testrailMilestone}\"",
