@@ -59,10 +59,7 @@ node () {
 }
 
 def upload_results_to_testrail(report_name, testSuiteName, methodname, testrail_name_template, reporter_extra_options=[]) {
-      def common = new com.mirantis.mk.Common()
-      def python = new com.mirantis.mk.Python()
       def venvPath = "$workspace/testrail-venv"
-      common.printMsg("venvPath: $venvPath", "blue")
       def testrailURL = "https://mirantis.testrail.com"
       def testrailProject = "Mirantis Cloud Platform"
       def testPlanNamePrefix = env.TEST_PLAN_NAME_PREFIX ?: "[MCP2.0]System"
