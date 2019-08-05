@@ -10,6 +10,7 @@
 def common = new com.mirantis.mk.Common()
 def python = new com.mirantis.mk.Python()
 def slaveNode = env.SLAVE_NODE ?: 'python'
+def reporting_timeout = env.REPORTING_TIMEOUT ?: 7200
 
 def reports_map = [
    'REPORT_SI_KAAS_BOOTSTRAP': [
@@ -33,53 +34,54 @@ def reports_map = [
        'desc': 'Tempest tests results'
    ],
 ]
+timeout(time: reporting_timeout.toInteger(), unit: 'SECONDS') {
+    node (slaveNode) {
+      def description = ''
+      def workspace = common.getWorkspace()
+      def venvPath = "$workspace/testrail-venv"
+      def testrailReporterPackage = 'git+https://github.com/dis-xcom/testrail_reporter'
 
-node (slaveNode) {
-  def description = ''
-  def workspace = common.getWorkspace()
-  def venvPath = "$workspace/testrail-venv"
-  def testrailReporterPackage = 'git+https://github.com/dis-xcom/testrail_reporter'
-
-  // Install testrail reporter to workspace
-  sh """
-        if ! [ -d ${venvPath} ]; then
-          virtualenv ${venvPath}
-        fi
-        . ${venvPath}/bin/activate
-        pip install --upgrade ${testrailReporterPackage}
-      """
-  // Download reports to workspace
-  stage ('Download reports and report to testrail') {
-      reports_map.each { param ->
-        common.printMsg("job parameter name: ${param.key}", 'blue')
-        common.printMsg("suite name: ${param.value['suite']}", 'blue')
-        common.printMsg("method name: ${param.value['method']}", 'blue')
-        if (env[param.key]) {
-            reportName = env[param.key].substring(env[param.key].lastIndexOf('/') + 1)
-            xml_report = python.runCmd("wget ${env[param.key]} -O $workspace/$reportName")
-            println "Reporting ${reportName}"
-            testSuiteName = "${param.value['suite']}"
-            methodname = "${param.value['method']}"
-            testrailNameTemplate = '{title}'
-            reporterExtraOptions = [
-              '--testrail-add-missing-cases',
-              '--testrail-case-custom-fields {\\\"custom_qa_team\\\":\\\"9\\\"}',
-              "--testrail-case-section-name \'All\'",
-              ]
-            ret = uploadResultsToTestrail(reportName, testSuiteName, methodname, testrailNameTemplate, reporterExtraOptions)
-            common.printMsg(ret.stdout, 'blue')
-            report_url = ret.stdout.split('\n').each {
-              if (it.contains('[TestRun URL]')) {
-                common.printMsg('Found report URL: ' + it.trim().split().last(), 'blue')
-                description += '<a href=' + it.trim().split().last() + ">${testSuiteName}</a><br>"
-              }
-            } // report url
-        } else {
-            println "Job parameter ${param.key} is not found or empty. Skipping report"
-        }
-    } // iterate map
-  } //stage
-}
+      // Install testrail reporter to workspace
+      sh """
+            if ! [ -d ${venvPath} ]; then
+              virtualenv ${venvPath}
+            fi
+            . ${venvPath}/bin/activate
+            pip install --upgrade ${testrailReporterPackage}
+          """
+      // Download reports to workspace
+      stage ('Download reports and report to testrail') {
+          reports_map.each { param ->
+            common.printMsg("job parameter name: ${param.key}", 'blue')
+            common.printMsg("suite name: ${param.value['suite']}", 'blue')
+            common.printMsg("method name: ${param.value['method']}", 'blue')
+            if (env[param.key]) {
+                reportName = env[param.key].substring(env[param.key].lastIndexOf('/') + 1)
+                xml_report = python.runCmd("wget ${env[param.key]} -O $workspace/$reportName")
+                println "Reporting ${reportName}"
+                testSuiteName = "${param.value['suite']}"
+                methodname = "${param.value['method']}"
+                testrailNameTemplate = '{title}'
+                reporterExtraOptions = [
+                  '--testrail-add-missing-cases',
+                  '--testrail-case-custom-fields {\\\"custom_qa_team\\\":\\\"9\\\"}',
+                  "--testrail-case-section-name \'All\'",
+                  ]
+                ret = uploadResultsToTestrail(reportName, testSuiteName, methodname, testrailNameTemplate, reporterExtraOptions)
+                common.printMsg(ret.stdout, 'blue')
+                report_url = ret.stdout.split('\n').each {
+                  if (it.contains('[TestRun URL]')) {
+                    common.printMsg('Found report URL: ' + it.trim().split().last(), 'blue')
+                    description += '<a href=' + it.trim().split().last() + ">${testSuiteName}</a><br>"
+                  }
+                } // report url
+            } else {
+                println "Job parameter ${param.key} is not found or empty. Skipping report"
+            }
+        } // iterate map
+      } //stage
+    } // node
+} //timeout
 
 def uploadResultsToTestrail(reportName, testSuiteName, methodname, testrailNameTemplate, reporterExtraOptions=[]) {
       def python = new com.mirantis.mk.Python()
