@@ -28,6 +28,21 @@ def reports_map = [
        'method': '{methodname}',
        'desc': ' KaaS UI tests results'
    ],
+   'REPORT_SI_IAM': [
+       'suite': '[MCP2.0]Integration automation',
+       'method': '{methodname}',
+       'desc': 'Integration report of IAM bdd test lauch'
+   ],
+   'REPORT_SI_K8S_MGMT': [
+       'suite': '[MCP2.0]Integration automation',
+       'method': '{methodname}',
+       'desc': 'Integration report of K8S Conformance mgmt cluster test lauch'
+   ],
+   'REPORT_K8S_MGMT': [
+       'suite': 'K8S Conformance mgmt cluster tests',
+       'method': '{methodname}',
+       'desc': 'K8S Conformance mgmt cluster UI tests results'
+   ],
    'REPORT_TEMPEST_TESTS': [
        'suite': 'Tempest 16.0.0 base',
        'method': '{classname}.{methodname}',
