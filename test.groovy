@@ -45,15 +45,14 @@ node () {
   // Download reports to workspace
   stage ("Download reports and report to testrail") {
       reports_map.each { param ->
-        println "job parameter name: ${param.key}"
-        println "suite name: ${param.value['suite']}"
+        common.printMsg("job parameter name: ${param.key}", "blue")
+        common.printMsg("suite name: ${param.value['suite']}", "blue")
         if (env[param.key]) {
             report_name = env[param.key].substring(env[param.key].lastIndexOf('/') +1)
             xml_report = python.runCmd("wget ${env[param.key]} -O $workspace/$report_name")
             println "Reporting ${report_name}"
             testSuiteName = "${param.value['suite']}"
             methodname = "${param.value['method']}"
-            common.printMsg("$methodname", "blue")
             testrail_name_template = "{title}"
             reporter_extra_options = [
               "--testrail-add-missing-cases",
