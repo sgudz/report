@@ -77,7 +77,7 @@ timeout(time: reporting_timeout.toInteger(), unit: 'SECONDS') {
                 //} // report url
             //} else {
                 //println "Job parameter ${param.key} is not found or empty. Skipping report"
-            //}
+            }
         } // iterate map
       } //stage
     } // node
