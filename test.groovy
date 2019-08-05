@@ -47,6 +47,7 @@ node () {
       reports_map.each { param ->
         common.printMsg("job parameter name: ${param.key}", "blue")
         common.printMsg("suite name: ${param.value['suite']}", "blue")
+        common.printMsg("method name: ${param.value['method']}", "blue")
         if (env[param.key]) {
             report_name = env[param.key].substring(env[param.key].lastIndexOf('/') +1)
             xml_report = python.runCmd("wget ${env[param.key]} -O $workspace/$report_name")
