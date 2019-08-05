@@ -86,12 +86,8 @@ def upload_results_to_testrail(report_name, testSuiteName, methodname, testrail_
         "--testrail-case-max-name-lenght ${testrailCaseMaxNameLenght}",
       ] + reporter_extra_options
 
-      def script = """
-        . ${venvPath}/bin/activate
-        set -ex
-        report ${reporterOptions.join(' ')} '${workspace}/${report_name}'
-      """
-
+      def script = "report ${reporterOptions.join(' ')} '${workspace}/${report_name}'"
+        
       def testrail_cred_id = env.TESTRAIL_CREDENTIALS_ID ?: 'system-integration-team-ci'
 
       withCredentials([
