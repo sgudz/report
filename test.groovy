@@ -4,6 +4,7 @@
  * REPORT_SI_KAAS_BOOTSTRAP: KaaS bootstrap report
  * REPORT_SI_KAAS_UI: Integration report of KaaS UI test lauch
  * REPORT_KAAS_UI: KaaS UI tests results
+ * REPORT_TEMPEST_TESTS: Tempest tests results
  **/
 
 def common = new com.mirantis.mk.Common()
@@ -13,19 +14,23 @@ def slaveNode = env.SLAVE_NODE ?: 'python'
 def reports_map = [
    'REPORT_SI_KAAS_BOOTSTRAP': [
        'suite': '[MCP2.0]Integration automation',
-       'method': '{methodname}'
+       'method': '{methodname}',
+       'desc': 'KaaS bootstrap report'
    ],
    'REPORT_SI_KAAS_UI': [
        'suite': '[MCP2.0]Integration automation',
-       'method': '{methodname}'
+       'method': '{methodname}',
+       'desc': 'Integration report of KaaS UI test lauch'
    ],
    'REPORT_KAAS_UI': [
        'suite': 'Kaas UI tests',
-       'method': '{methodname}'
+       'method': '{methodname}',
+       'desc': ' KaaS UI tests results'
    ],
-   'TEMPEST_REPORT': [
-       'suite': 'WILL_BE_ADDED',
-       'method': '{classname}.{methodname}'
+   'REPORT_TEMPEST_TESTS': [
+       'suite': 'Tempest 16.0.0 base',
+       'method': '{classname}.{methodname}',
+       'desc': 'Tempest tests results'
    ],
 ]
 
@@ -46,9 +51,9 @@ node (slaveNode) {
   // Download reports to workspace
   stage ('Download reports and report to testrail') {
       reports_map.each { param ->
-        common.printMsg("job parameter name: ${param.key}", 'purple')
-        common.printMsg("suite name: ${param.value['suite']}", 'purple')
-        common.printMsg("method name: ${param.value['method']}", 'purple')
+        common.printMsg("job parameter name: ${param.key}", 'blue')
+        common.printMsg("suite name: ${param.value['suite']}", 'blue')
+        common.printMsg("method name: ${param.value['method']}", 'blue')
         if (env[param.key]) {
             reportName = env[param.key].substring(env[param.key].lastIndexOf('/') + 1)
             xml_report = python.runCmd("wget ${env[param.key]} -O $workspace/$reportName")
