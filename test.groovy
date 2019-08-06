@@ -136,10 +136,12 @@ def uploadResultsToTestrail(reportName, testSuiteName, methodname, testrailNameT
                  passwordVariable: 'TESTRAIL_PASSWORD',
                  usernameVariable: 'TESTRAIL_USER'],
       ]) {
+        
         def ret = [:]
         ret.stdout = ''
         ret.exception = ''
         try {
+            common.printMsg("Testrail user:  ${TESTRAIL_USER}", 'blue')
             ret.stdout = python.runCmd(script, venvPath)
         } catch (Exception ex) {
             ret.exception = ("""\
