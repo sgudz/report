@@ -67,13 +67,13 @@ timeout(time: reporting_timeout.toInteger(), unit: 'SECONDS') {
       // Download reports to workspace
       stage ('Download reports and report to testrail') {
           reports_map.each { param ->
-            common.printMsg("job parameter name: ${param.key}", 'blue')
-            common.printMsg("suite name: ${param.value['suite']}", 'blue')
-            common.printMsg("method name: ${param.value['method']}", 'blue')
+            common.printMsg("job parameter name: ${param.key}", 'cyan')
+            common.printMsg("suite name: ${param.value['suite']}", 'cyan')
+            common.printMsg("method name: ${param.value['method']}", 'cyan')
             if (env[param.key]) {
                 reportName = env[param.key].substring(env[param.key].lastIndexOf('/') + 1)
                 xml_report = python.runCmd("wget ${env[param.key]} -O $workspace/$reportName")
-                println "Reporting ${reportName}"
+                common.printMsg("Reporting ${reportName} from ${env[param.key]}", "cyan")
                 testSuiteName = "${param.value['suite']}"
                 methodname = "${param.value['method']}"
                 testrailNameTemplate = '{title}'
@@ -125,6 +125,8 @@ def uploadResultsToTestrail(reportName, testSuiteName, methodname, testrailNameT
         "--test-results-link \"${jobURL}\"",
         "--testrail-case-max-name-lenght ${testrailCaseMaxNameLenght}",
       ] + reporterExtraOptions
+   
+   // This is used to use correct username pattern for testrail
       withCredentials([
                  [$class          : 'UsernamePasswordMultiBinding',
                  credentialsId   : testrail_cred_id,
@@ -136,25 +138,16 @@ def uploadResultsToTestrail(reportName, testSuiteName, methodname, testrailNameT
         } else {
             reporterOptions += "--testrail-user \"\${TESTRAIL_USER}\""
         }
-      }
+      } // withCredentials
+   
+   
       def script = "report ${reporterOptions.join(' ')} '${workspace}/${reportName}'"
-      //def testrail_cred_id = env.TESTRAIL_CREDENTIALS_ID ?: 'system-integration-team-ci'
-
       withCredentials([
                  [$class          : 'UsernamePasswordMultiBinding',
                  credentialsId   : testrail_cred_id,
                  passwordVariable: 'TESTRAIL_PASSWORD',
                  usernameVariable: 'TESTRAIL_USER'],
       ]) {
-        def ret = [:]
-        ret.stdout = ''
-        ret.exception = ''
-        try {
-            ret.stdout = python.runCmd(script, venvPath)
-        } catch (Exception ex) {
-            ret.exception = ("""\
-            ##### Report to failed: #####\n""" + ex.message + '\n\n')
-        }
-        return ret
+        python.runCmd(script, venvPath, true, false)
       }
 }
