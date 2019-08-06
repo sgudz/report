@@ -5,12 +5,14 @@
  * REPORT_SI_KAAS_UI: Integration report of KaaS UI test lauch
  * REPORT_KAAS_UI: KaaS UI tests results
  * REPORT_TEMPEST_TESTS: Tempest tests results
+ * KAAS_MANAGEMENT_CLUSTER_K8S_VERSION: K8s version of mgmt cluster
  **/
 
 def common = new com.mirantis.mk.Common()
 def python = new com.mirantis.mk.Python()
 def slaveNode = env.SLAVE_NODE ?: 'python'
 def reporting_timeout = env.REPORTING_TIMEOUT ?: 7200
+def KAAS_MANAGEMENT_CLUSTER_K8S_VERSION = env.KAAS_MANAGEMENT_CLUSTER_K8S_VERSION ?: ''
 
 def reports_map = [
    'REPORT_SI_KAAS_BOOTSTRAP': [
@@ -24,7 +26,7 @@ def reports_map = [
        'desc': 'Integration report of KaaS UI test lauch'
    ],
    'REPORT_KAAS_UI': [
-       'suite': 'Kaas UI tests',
+       'suite': '[MCP2.0] KaaS UI tests',
        'method': '{methodname}',
        'desc': ' KaaS UI tests results'
    ],
@@ -39,7 +41,7 @@ def reports_map = [
        'desc': 'Integration report of K8S Conformance mgmt cluster test lauch'
    ],
    'REPORT_K8S_MGMT': [
-       'suite': 'K8S Conformance mgmt cluster tests',
+       'suite': "[MCP2.0] ${env.KAAS_MANAGEMENT_CLUSTER_K8S_VERSION} K8s Conformance",
        'method': '{methodname}',
        'desc': 'K8S Conformance mgmt cluster UI tests results'
    ],
@@ -70,9 +72,21 @@ timeout(time: reporting_timeout.toInteger(), unit: 'SECONDS') {
             common.printMsg("job parameter name: ${param.key}", 'cyan')
             common.printMsg("suite name: ${param.value['suite']}", 'cyan')
             common.printMsg("method name: ${param.value['method']}", 'cyan')
+            if ("${param.key}" == "REPORT_K8S_MGMT" && ! KAAS_MANAGEMENT_CLUSTER_K8S_VERSION) {
+                common.errorMsg("KAAS_MANAGEMENT_CLUSTER_K8S_VERSION is not set")
+                return
+            }
             if (env[param.key]) {
                 reportName = env[param.key].substring(env[param.key].lastIndexOf('/') + 1)
-                xml_report = python.runCmd("wget ${env[param.key]} -O $workspace/$reportName")
+                try {
+                    xml_report = python.runCmd("wget ${env[param.key]} -O $workspace/$reportName")
+                    python.runCmd("test -s $workspace/$reportName", "", true, true)
+                }
+                catch(Exception e) {
+                    common.errorMsg("Exception: ${e}")
+                    common.errorMsg("${param.key} report is not available or empty. Skipping.")
+                    return
+                }
                 common.printMsg("Reporting ${reportName} from ${env[param.key]}", "cyan")
                 testSuiteName = "${param.value['suite']}"
                 methodname = "${param.value['method']}"
