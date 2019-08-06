@@ -124,10 +124,6 @@ def uploadResultsToTestrail(reportName, testSuiteName, methodname, testrailNameT
         "--test-results-link \"${jobURL}\"",
         "--testrail-case-max-name-lenght ${testrailCaseMaxNameLenght}",
       ] + reporterExtraOptions
-
-      def script = "report ${reporterOptions.join(' ')} '${workspace}/${reportName}'"
-      def testrail_cred_id = env.TESTRAIL_CREDENTIALS_ID ?: 'system-integration-team-ci'
-
       withCredentials([
                  [$class          : 'UsernamePasswordMultiBinding',
                  credentialsId   : testrail_cred_id,
@@ -139,6 +135,16 @@ def uploadResultsToTestrail(reportName, testSuiteName, methodname, testrailNameT
         } else {
             reporterOptions += "--testrail-user \"\${TESTRAIL_USER}\""
         }
+      }
+      def script = "report ${reporterOptions.join(' ')} '${workspace}/${reportName}'"
+      def testrail_cred_id = env.TESTRAIL_CREDENTIALS_ID ?: 'system-integration-team-ci'
+
+      withCredentials([
+                 [$class          : 'UsernamePasswordMultiBinding',
+                 credentialsId   : testrail_cred_id,
+                 passwordVariable: 'TESTRAIL_PASSWORD',
+                 usernameVariable: 'TESTRAIL_USER'],
+      ]) {
         def ret = [:]
         ret.stdout = ''
         ret.exception = ''
