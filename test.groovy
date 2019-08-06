@@ -114,7 +114,6 @@ def uploadResultsToTestrail(reportName, testSuiteName, methodname, testrailNameT
         "--env-description \"${testPlanDesc}\"",
         '--testrail-run-update',
         "--testrail-url \"${testrailURL}\"",
-        "--testrail-user \"\${TESTRAIL_USER}@mirantis.com\"",
         "--testrail-password \"\${TESTRAIL_PASSWORD}\"",
         "--testrail-project \"${testrailProject}\"",
         "--testrail-plan-name \"${testPlanName}\"",
@@ -136,9 +135,9 @@ def uploadResultsToTestrail(reportName, testSuiteName, methodname, testrailNameT
                  usernameVariable: 'TESTRAIL_USER'],
       ]) {
         if (! TESTRAIL_USER.contains('@mirantis.com')) {
-            reporterOptions += "--testrail-password \"\${TESTRAIL_PASSWORD}@mirantis.com\""
+            reporterOptions += "--testrail-user \"\${TESTRAIL_USER}@mirantis.com\""
         } else {
-            reporterOptions += "--testrail-password \"\${TESTRAIL_PASSWORD}\""
+            reporterOptions += "--testrail-user \"\${TESTRAIL_USER}\""
         }
         def ret = [:]
         ret.stdout = ''
