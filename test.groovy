@@ -53,6 +53,9 @@ def reports_map = [
 ]
 timeout(time: reporting_timeout.toInteger(), unit: 'SECONDS') {
     node (slaveNode) {
+      if (! "${ENV_NAME}") {
+          throw new Exception("ENV_NAME is not set")
+      }
       def description = ''
       def workspace = common.getWorkspace()
       def venvPath = "$workspace/testrail-venv"
@@ -74,16 +77,16 @@ timeout(time: reporting_timeout.toInteger(), unit: 'SECONDS') {
             common.printMsg("method name: ${param.value['method']}", 'cyan')
             if ("${param.key}" == "REPORT_K8S_MGMT" && ! KAAS_MANAGEMENT_CLUSTER_K8S_VERSION) {
                 common.errorMsg("KAAS_MANAGEMENT_CLUSTER_K8S_VERSION is not set")
+                common.errorMsg("K8s Conformance test report for Management cluster will not be uploaded to TestRail")
                 return
             }
             if (env[param.key]) {
                 reportName = env[param.key].substring(env[param.key].lastIndexOf('/') + 1)
                 try {
                     xml_report = python.runCmd("wget ${env[param.key]} -O $workspace/$reportName")
-                    python.runCmd("test -s $workspace/$reportName", "", true, true)
+                    python.runCmd("test -s $workspace/$reportName")
                 }
                 catch(Exception e) {
-                    common.errorMsg("Exception: ${e}")
                     common.errorMsg("${param.key} report is not available or empty. Skipping.")
                     return
                 }
