@@ -135,7 +135,11 @@ def uploadResultsToTestrail(reportName, testSuiteName, methodname, testrailNameT
                  passwordVariable: 'TESTRAIL_PASSWORD',
                  usernameVariable: 'TESTRAIL_USER'],
       ]) {
-        sh 'echo uname=$TESTRAIL_USER pwd=$TESTRAIL_PASSWORD'
+        if (TESTRAIL_USER.contains('@mirantis.com')) {
+            sh 'echo uname=$TESTRAIL_USER'
+        } else {
+           sh 'echo uname=$TESTRAIL_USER@mirantis.com'
+        }
         def ret = [:]
         ret.stdout = ''
         ret.exception = ''
