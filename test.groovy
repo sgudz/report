@@ -109,6 +109,7 @@ def uploadResultsToTestrail(reportName, testSuiteName, methodname, testrailNameT
       def testrailMilestone = 'MCP2.0'
       def testrailCaseMaxNameLenght = 250
       def jobURL = env.BUILD_URL
+      def testrail_cred_id = env.TESTRAIL_CREDENTIALS_ID ?: 'system-integration-team-ci'
       def reporterOptions = [
         '--verbose',
         "--env-description \"${testPlanDesc}\"",
@@ -137,7 +138,7 @@ def uploadResultsToTestrail(reportName, testSuiteName, methodname, testrailNameT
         }
       }
       def script = "report ${reporterOptions.join(' ')} '${workspace}/${reportName}'"
-      def testrail_cred_id = env.TESTRAIL_CREDENTIALS_ID ?: 'system-integration-team-ci'
+      //def testrail_cred_id = env.TESTRAIL_CREDENTIALS_ID ?: 'system-integration-team-ci'
 
       withCredentials([
                  [$class          : 'UsernamePasswordMultiBinding',
