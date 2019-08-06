@@ -135,7 +135,7 @@ def uploadResultsToTestrail(reportName, testSuiteName, methodname, testrailNameT
                  passwordVariable: 'TESTRAIL_PASSWORD',
                  usernameVariable: 'TESTRAIL_USER'],
       ]) {
-        if (TESTRAIL_USER.contains('@mirantis.com')) {
+        if (TESTRAIL_USER.contains('aaaaaaaa')) {
             sh 'echo uname=$TESTRAIL_USER'
         } else {
            sh 'echo uname=$TESTRAIL_USER@mirantis.com'
