@@ -99,6 +99,7 @@ timeout(time: reporting_timeout.toInteger(), unit: 'SECONDS') {
 } //timeout
 
 def uploadResultsToTestrail(reportName, testSuiteName, methodname, testrailNameTemplate, reporterExtraOptions=[]) {
+      def common = new com.mirantis.mk.Common()
       def python = new com.mirantis.mk.Python()
       def venvPath = "$workspace/testrail-venv"
       def testrailURL = 'https://mirantis.testrail.com'
@@ -109,7 +110,7 @@ def uploadResultsToTestrail(reportName, testSuiteName, methodname, testrailNameT
       def testrailMilestone = 'MCP2.0'
       def testrailCaseMaxNameLenght = 250
       def jobURL = env.BUILD_URL
-
+      common.printMsg("Testrail user:  ${TESTRAIL_USER}", 'blue')
       def reporterOptions = [
         '--verbose',
         "--env-description \"${testPlanDesc}\"",
@@ -141,7 +142,6 @@ def uploadResultsToTestrail(reportName, testSuiteName, methodname, testrailNameT
         ret.stdout = ''
         ret.exception = ''
         try {
-            common.printMsg("Testrail user:  ${TESTRAIL_USER}", 'blue')
             ret.stdout = python.runCmd(script, venvPath)
         } catch (Exception ex) {
             ret.exception = ("""\
