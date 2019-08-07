@@ -62,13 +62,8 @@ timeout(time: reporting_timeout.toInteger(), unit: 'SECONDS') {
       def testrailReporterPackage = 'git+https://github.com/dis-xcom/testrail_reporter'
 
       // Install testrail reporter to workspace
-      sh """
-            if ! [ -d ${venvPath} ]; then
-              virtualenv ${venvPath}
-            fi
-            . ${venvPath}/bin/activate
-            pip install --upgrade ${testrailReporterPackage}
-          """
+      python.runCmd("pip install --upgrade ${testrailReporterPackage}", venvPath)
+      
       // Download reports to workspace
       stage ('Download reports and report to testrail') {
           reports_map.each { param ->
