@@ -81,16 +81,18 @@ timeout(time: reporting_timeout.toInteger(), unit: 'SECONDS') {
                 return
             }
             if (env[param.key]) {
-                reportName = env[param.key].substring(env[param.key].lastIndexOf('/') + 1)
+                //reportName = env[param.key].substring(env[param.key].lastIndexOf('/') + 1)
+                reportName = "${param.key}.xml"
                 try {
-                    xml_report = python.runCmd("wget ${env[param.key]} -O $workspace/$reportName")
-                    python.runCmd("test -s $workspace/$reportName")
+                    //xml_report = python.runCmd("wget ${env[param.key]} -O $workspace/$reportName")
+                    xml_report = python.runCmd("wget ${env[param.key]} -O $workspace/${param.key}.xml")
+                    python.runCmd("test -s $workspace/${param.key}.xml")
                 }
                 catch(Exception e) {
                     common.errorMsg("${param.key} report is not available or empty. Skipping.")
                     return
                 }
-                common.printMsg("Reporting ${reportName} from ${env[param.key]}", "cyan")
+                common.printMsg("Reporting ${param.key}.xml from ${env[param.key]}", "cyan")
                 testSuiteName = "${param.value['suite']}"
                 methodname = "${param.value['method']}"
                 testrailNameTemplate = '{title}'
@@ -101,14 +103,6 @@ timeout(time: reporting_timeout.toInteger(), unit: 'SECONDS') {
                   ]
                 ret = uploadResultsToTestrail(reportName, testSuiteName, methodname, testrailNameTemplate, reporterExtraOptions)
                 common.printMsg(ret.stdout, 'blue')
-                //report_url = ret.stdout.split('\n').each {
-                  //if (it.contains('[TestRun URL]')) {
-                  //  common.printMsg('Found report URL: ' + it.trim().split().last(), 'blue')
-                  //  description += '<a href=' + it.trim().split().last() + ">${testSuiteName}</a><br>"
-                  //}
-                //} // report url
-            //} else {
-                //println "Job parameter ${param.key} is not found or empty. Skipping report"
             }
         } // iterate map
       } //stage
