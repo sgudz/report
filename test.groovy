@@ -41,7 +41,7 @@ def reports_map = [
        'desc': 'Integration report of K8S Conformance mgmt cluster test lauch'
    ],
    'REPORT_K8S_MGMT': [
-       'suite': "[MCP2.0] ${env.KAAS_MANAGEMENT_CLUSTER_K8S_VERSION} K8s Conformance",
+       'suite': "[MCP2.0] $KAAS_MANAGEMENT_CLUSTER_K8S_VERSION K8s Conformance",
        'method': '{methodname}',
        'desc': 'K8S Conformance mgmt cluster UI tests results'
    ],
@@ -101,8 +101,13 @@ timeout(time: reporting_timeout.toInteger(), unit: 'SECONDS') {
                   '--testrail-case-custom-fields {\\\"custom_qa_team\\\":\\\"9\\\"}',
                   "--testrail-case-section-name \'All\'",
                   ]
-                ret = uploadResultsToTestrail(reportName, testSuiteName, methodname, testrailNameTemplate, reporterExtraOptions)
-                common.printMsg(ret.stdout, 'blue')
+                try {
+                    ret = uploadResultsToTestrail(reportName, testSuiteName, methodname, testrailNameTemplate, reporterExtraOptions)
+                    common.printMsg(ret.stdout, 'cyan')
+                } finally {
+                    common.printMsg("Succesfully rported. Removing file ${param.key}.xml", 'cyan')
+                    python.runCmd("rm $workspace/${param.key}.xml || true")
+                }
             }
         } // iterate map
       } //stage
@@ -144,10 +149,10 @@ def uploadResultsToTestrail(reportName, testSuiteName, methodname, testrailNameT
                  passwordVariable: 'TESTRAIL_PASSWORD',
                  usernameVariable: 'TESTRAIL_USER'],
       ]) {
-        if (! TESTRAIL_USER.contains('@mirantis.com')) {
-            reporterOptions += "--testrail-user \"\${TESTRAIL_USER}@mirantis.com\""
-        } else {
+        if ( TESTRAIL_USER.contains('@mirantis.com')) {
             reporterOptions += "--testrail-user \"\${TESTRAIL_USER}\""
+        } else {
+            reporterOptions += "--testrail-user \"\${TESTRAIL_USER}@mirantis.com\""
         }
       } // withCredentials
    
